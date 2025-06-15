@@ -1,5 +1,5 @@
 <div class="container">
-	<h1 class="title">Demos</h1>
+	<h1 class="title">Imad's Demos</h1>
 	<p>
 		Lorem ipsum dolor sit, amet consectetur adipisicing elit. Repudiandae, maiores, sunt quasi
 		voluptatibus rem dolore praesentium esse neque cum perferendis necessitatibus magnam, asperiores
