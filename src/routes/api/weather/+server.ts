@@ -1,20 +1,28 @@
 import { VC_API_KEY } from '$env/static/private';
-import { fetchWeather } from '$lib/weather';
+import { badRequest, badGateway, internalError } from '$lib/api-errors';
+import { fetchWeather, filterWeatherDay } from '$lib/weather';
 
 export async function POST({ request }) {
-	const body = await request.json();
-	const data = await fetchWeather(body.location, VC_API_KEY);
+	try {
+		const body = await request.json();
+		if (!body.location) return badRequest('Location is required.');
 
-	const dataSmall = {
-		location: data.address,
-		fullLocation: data.resolvedAddress,
-		temp: data.days[0].temp,
-		max: data.days[0].tempmax,
-		min: data.days[0].tempmin,
-		tomTemp: data.days[1].temp
-	};
+		const data = await fetchWeather(body.location, VC_API_KEY);
+		if (data?.days?.length < 2) return badGateway('Weather data unavailable.');
 
-	return new Response(JSON.stringify(dataSmall), {
-		headers: { 'Content-Type': 'application/json' }
-	});
+		const keysToKeep = ['datetime', 'tempmax', 'tempmin', 'temp', 'conditions'];
+		const daysFiltered = data.days.map((day) => filterWeatherDay(day, keysToKeep));
+
+		const dataFiltered = {
+			location: data.resolvedAddress,
+			days: daysFiltered
+		};
+
+		return new Response(JSON.stringify(dataFiltered), {
+			headers: { 'Content-Type': 'application/json' }
+		});
+	} catch (error) {
+		console.error('Weather API error:', error);
+		return internalError();
+	}
 }
