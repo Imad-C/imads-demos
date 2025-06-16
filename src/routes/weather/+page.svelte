@@ -1,12 +1,5 @@
 <script lang="ts">
-	interface WeatherData {
-		location: string;
-		fullLocation: string;
-		temp: number;
-		max: number;
-		min: number;
-		tomTemp: number;
-	}
+	import type { WeatherData } from '$lib/weather';
 
 	let location: string | null = null;
 	let loadingLoactionWeather = false;
@@ -37,7 +30,9 @@
 			<button on:click={() => fetchWeather(location || '')}>Go</button>
 		</div>
 		<div class="right-panel">
-			{#if locationWeather}
+			{#if loadingLoactionWeather}
+				<p>Loading...</p>
+			{:else if locationWeather}
 				<h2 class="location-heading">{locationWeather?.location}</h2>
 				<div class="today-panel">
 					<p class="temperature">{locationWeather?.temp}°C</p>
@@ -48,8 +43,6 @@
 				</div>
 
 				<p class="tomorrow">Tomorrow: {locationWeather?.tomTemp}°C</p>
-			{:else if loadingLoactionWeather}
-				<p>Loading...</p>
 			{:else}
 				<p>Search for Somewhere!</p>
 			{/if}
@@ -74,7 +67,7 @@
 		display: flex;
 		justify-content: space-around;
 		text-align: center;
-		align-items: center;
+		/* align-items: center; */
 	}
 
 	.left-panel,
