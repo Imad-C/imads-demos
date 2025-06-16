@@ -1,5 +1,5 @@
 import { VC_API_KEY } from '$env/static/private';
-import { fetchWeather } from '$lib/services/visual-crossing';
+import { fetchWeather } from '$lib/weather';
 
 export async function POST({ request }) {
 	const body = await request.json();

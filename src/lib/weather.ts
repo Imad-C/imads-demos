@@ -4,3 +4,12 @@ export async function fetchWeather(location: string, apiKey: string) {
 	);
 	return res.json();
 }
+
+export interface WeatherData {
+	location: string;
+	fullLocation: string;
+	temp: number;
+	max: number;
+	min: number;
+	tomTemp: number;
+}
