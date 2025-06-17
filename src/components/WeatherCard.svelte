@@ -1,16 +1,19 @@
 <script lang="ts">
-	import type { WeatherData } from '$lib/weather';
+	import type { WeatherDay } from '$lib/weather';
 
-	// export let weatherData: WeatherData | null = null;
+	export let location: string = '';
+	export let weatherDay: WeatherDay;
 </script>
 
 <div class="container">
-	<p class="location-name">LocationName</p>
-	<p class="today">30</p>
-	<p>Very Sunny</p>
+	{#if location}
+		<p class="location-name">{location}</p>
+	{/if}
+	<p class="today">{Math.round(weatherDay.temp)}</p>
+	<p>{weatherDay.conditions}</p>
 	<div class="range-container">
-		<p>H:25</p>
-		<p>L:35</p>
+		<p>H:{Math.round(weatherDay.tempmax)}</p>
+		<p>L:{Math.round(weatherDay.tempmin)}</p>
 	</div>
 </div>
 

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { WeatherData } from '$lib/weather';
+	import type { WeatherApiResponse } from '$lib/weather';
 	import WeatherCard from '$components/WeatherCard.svelte';
 
 	let location: string | null = null;
 	let loadingLoactionWeather = false;
-	let locationWeather: WeatherData | null = null;
+	let locationWeather: WeatherApiResponse | null = null;
 	let loactionWeatherError: string | null = null;
 
 	async function fetchWeather(location: string) {
@@ -24,6 +24,7 @@
 			loactionWeatherError = data.error;
 			locationWeather = null;
 		} else {
+			data.days = data.days.slice(0, 5);
 			locationWeather = data;
 		}
 
@@ -31,17 +32,32 @@
 	}
 </script>
 
-<div>
-	<h1>Weather</h1>
+<h1>Weather</h1>
 
-	<label for="search-location">Search Location</label>
-	<input bind:value={location} id="search-location" />
-	<button on:click={() => fetchWeather(location || '')}>Go</button>
+<div class="layout-container">
+	<div class="search-panel">
+		<label for="search-location">Search Location</label>
+		<input bind:value={location} id="search-location" />
+		<button on:click={() => fetchWeather(location || '')}>Go</button>
+	</div>
 
-	{#if locationWeather}
-		<pre>{JSON.stringify(locationWeather, null, 2)}</pre>
-	{/if}
+	<div class="weather-panel">
+		{#if locationWeather?.days}
+			{#each locationWeather.days as day}
+				<WeatherCard weatherDay={day} />
+			{/each}
+		{/if}
+	</div>
 </div>
 
 <style>
+	.layout-container {
+		display: grid;
+		grid-template-columns: 1fr 5fr;
+	}
+
+	.weather-panel {
+		display: flex;
+		justify-content: space-around;
+	}
 </style>
