@@ -47,6 +47,7 @@
 		top: 0;
 		border-bottom: 1px solid var(--gray);
 		display: flex;
+		justify-content: center;
 		gap: 0.1rem;
 		padding: 0.1rem 0.1rem 0 0.1rem;
 		background: white;

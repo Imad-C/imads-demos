@@ -4,6 +4,7 @@ export interface WeatherDay {
 	tempmin: number;
 	temp: number;
 	conditions: string;
+	icon: string;
 }
 
 export interface WeatherApiResponse {

@@ -3,14 +3,28 @@
 
 	export let location: string = '';
 	export let weatherDay: WeatherDay;
+
+	function formatDate(datetime: string): string {
+		const date = new Date(datetime);
+		const day = date.toLocaleDateString('en-UK', { weekday: 'short' });
+		const dayNumber = date.getDate();
+		return `${day} ${dayNumber}`;
+	}
 </script>
 
 <div class="container">
-	<p class="datetime">{weatherDay.datetime}</p>
+	<p class="datetime">{formatDate(weatherDay.datetime)}</p>
 	{#if location}
 		<p>{location}</p>
 	{/if}
 	<p class="today">{Math.round(weatherDay.temp)}</p>
+	<img
+		class="weather-icon"
+		src="/weather-icons/{weatherDay.icon}.png"
+		alt="An illustration of the sun."
+		height="64"
+		width="64"
+	/>
 	<p>{weatherDay.conditions}</p>
 	<div class="range-container">
 		<p>H:{Math.round(weatherDay.tempmax)}</p>
@@ -23,13 +37,15 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		position: relative; /* Add this */
+		position: relative;
+		text-align: center;
 
-		border: 3px solid rgb(86, 86, 152, 0.2);
+		/* border: 3px solid var(--gray); */
 		border-radius: 5px;
-		background-color: var(--light-gray);
 		padding: 1rem;
+
 		min-width: 6rem;
+		max-width: 7rem;
 
 		font-family: 'SairaCondensed', sans-serif;
 		line-height: 1;
@@ -37,10 +53,18 @@
 
 	.datetime {
 		position: absolute;
-		top: -1.2em;
+		top: -0.3rem;
+	}
+
+	.weather-icon {
+		position: absolute;
+		opacity: 0.5;
+		top: -0.2rem;
+		right: 0;
 	}
 
 	.today {
+		z-index: 1;
 		font-size: 4rem;
 		padding: 0;
 		margin: 0;

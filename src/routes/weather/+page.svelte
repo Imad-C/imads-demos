@@ -26,7 +26,6 @@
 			loactionWeatherError = data.error;
 			locationWeather = null;
 		} else {
-			data.days = data.days.slice(0, 5);
 			locationWeather = data;
 		}
 
@@ -46,10 +45,12 @@
 	<p>Error: {loactionWeatherError}</p>
 {:else if locationWeather?.days}
 	<div class="weather-panel">
-		<p class="location-name">{locationWeather.resolvedAddress}</p>
+		<p class="location-name" transition:fly={{ x: -500, duration: 500 }}>
+			{locationWeather.resolvedAddress}
+		</p>
 		<div class="weather-cards">
-			{#each locationWeather.days as day}
-				<div>
+			{#each locationWeather.days.slice(0, 10) as day, index}
+				<div in:fly|global={{ x: 500, duration: 400, delay: index * 50 }}>
 					<WeatherCard weatherDay={day} />
 				</div>
 			{/each}
@@ -62,7 +63,7 @@
 		text-align: center;
 		padding-bottom: 0.25rem;
 		margin-bottom: 1rem;
-		border-bottom: 1px solid var(--gray);
+		/* border-bottom: 1px solid var(--gray); */
 	}
 
 	.search {
@@ -71,13 +72,6 @@
 
 	.weather-panel {
 		padding: 1rem;
-
-		background: linear-gradient(
-			180deg,
-			var(--light-gray) 0%,
-			var(--gray) 50%,
-			var(--light-gray) 100%
-		);
 	}
 
 	.location-name {
@@ -87,7 +81,9 @@
 	}
 
 	.weather-cards {
-		display: flex;
-		justify-content: space-between;
+		display: grid;
+		grid-template-columns: repeat(5, 1fr);
+		grid-template-rows: repeat(2, 1fr);
+		gap: 3rem;
 	}
 </style>
