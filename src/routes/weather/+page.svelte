@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { WeatherApiResponse } from '$lib/weather';
 	import WeatherCard from '$components/WeatherCard.svelte';
+	import Search from '$components/Search.svelte';
 
 	let location: string | null = null;
 	let loadingLoactionWeather = false;
@@ -32,32 +33,36 @@
 	}
 </script>
 
-<h1>Weather</h1>
+<h1 class="title">Weather</h1>
 
-<div class="layout-container">
-	<div class="search-panel">
-		<label for="search-location">Search Location</label>
-		<input bind:value={location} id="search-location" />
-		<button on:click={() => fetchWeather(location || '')}>Go</button>
-	</div>
+<div>
+	<Search bind:value={location} handler={() => fetchWeather(location || '')} />
 
-	<div class="weather-panel">
+	<div>
 		{#if locationWeather?.days}
-			{#each locationWeather.days as day}
-				<WeatherCard weatherDay={day} />
-			{/each}
+			<p class="location-name">{locationWeather.resolvedAddress}</p>
+			<div class="weather-cards">
+				{#each locationWeather.days as day}
+					<WeatherCard weatherDay={day} />
+				{/each}
+			</div>
 		{/if}
 	</div>
 </div>
 
 <style>
-	.layout-container {
-		display: grid;
-		grid-template-columns: 1fr 5fr;
+	.title {
+		text-align: center;
+		margin-bottom: 1rem;
 	}
 
-	.weather-panel {
+	.location-name {
+		text-align: start;
+		font-size: 2.5rem;
+	}
+
+	.weather-cards {
 		display: flex;
-		justify-content: space-around;
+		justify-content: space-between;
 	}
 </style>

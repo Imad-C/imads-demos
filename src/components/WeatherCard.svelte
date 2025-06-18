@@ -7,7 +7,7 @@
 
 <div class="container">
 	{#if location}
-		<p class="location-name">{location}</p>
+		<p>{location}</p>
 	{/if}
 	<p class="today">{Math.round(weatherDay.temp)}</p>
 	<p>{weatherDay.conditions}</p>
@@ -22,12 +22,13 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+
+		border: 1px solid red;
+		padding: 1rem;
+		min-width: 6rem;
+
 		font-family: 'SairaCondensed', sans-serif;
 		line-height: 1;
-	}
-
-	.location-name {
-		font-size: 1.4rem;
 	}
 
 	.today {

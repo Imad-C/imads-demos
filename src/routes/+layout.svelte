@@ -33,6 +33,7 @@
 	.layout-main {
 		flex: 1;
 		padding-bottom: 1.2rem;
+		margin: 0 1rem;
 	}
 
 	.navbar {
