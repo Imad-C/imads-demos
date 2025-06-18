@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fly } from 'svelte/transition';
 	import type { WeatherApiResponse } from '$lib/weather';
 	import WeatherCard from '$components/WeatherCard.svelte';
 	import Search from '$components/Search.svelte';
@@ -35,30 +36,54 @@
 
 <h1 class="title">Weather</h1>
 
-<div>
+<div class="search">
 	<Search bind:value={location} handler={() => fetchWeather(location || '')} />
-
-	<div>
-		{#if locationWeather?.days}
-			<p class="location-name">{locationWeather.resolvedAddress}</p>
-			<div class="weather-cards">
-				{#each locationWeather.days as day}
-					<WeatherCard weatherDay={day} />
-				{/each}
-			</div>
-		{/if}
-	</div>
 </div>
+
+{#if loadingLoactionWeather}
+	<p>Loading...</p>
+{:else if loactionWeatherError}
+	<p>Error: {loactionWeatherError}</p>
+{:else if locationWeather?.days}
+	<div class="weather-panel">
+		<p class="location-name">{locationWeather.resolvedAddress}</p>
+		<div class="weather-cards">
+			{#each locationWeather.days as day}
+				<div>
+					<WeatherCard weatherDay={day} />
+				</div>
+			{/each}
+		</div>
+	</div>
+{/if}
 
 <style>
 	.title {
 		text-align: center;
+		padding-bottom: 0.25rem;
 		margin-bottom: 1rem;
+		border-bottom: 1px solid var(--gray);
+	}
+
+	.search {
+		margin-bottom: 1.5rem;
+	}
+
+	.weather-panel {
+		padding: 1rem;
+
+		background: linear-gradient(
+			180deg,
+			var(--light-gray) 0%,
+			var(--gray) 50%,
+			var(--light-gray) 100%
+		);
 	}
 
 	.location-name {
 		text-align: start;
 		font-size: 2.5rem;
+		margin-bottom: 2rem;
 	}
 
 	.weather-cards {

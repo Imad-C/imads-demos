@@ -32,8 +32,14 @@
 
 	.layout-main {
 		flex: 1;
-		padding-bottom: 1.2rem;
-		margin: 0 1rem;
+		box-sizing: border-box;
+		padding: 1rem 2rem 1.2rem 2rem;
+		display: flex;
+		flex-direction: column;
+		max-width: 1200px;
+		margin: 0 auto;
+		background: var(--light-gray);
+		width: 100%;
 	}
 
 	.navbar {

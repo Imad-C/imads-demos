@@ -1,6 +1,6 @@
 <script lang="ts">
 	export let value: string | null;
-	export let handler: function;
+	export let handler: (event: MouseEvent) => void;
 </script>
 
 <div class="search-container">
@@ -33,7 +33,7 @@
 							fill="#394240"
 							d="M62.828,57.172L50.402,44.746C53.902,40.07,56,34.289,56,28C56,12.535,43.465,0,28,0S0,12.535,0,28 s12.535,28,28,28c6.289,0,12.074-2.098,16.75-5.598l12.422,12.426c1.562,1.562,4.094,1.562,5.656,0S64.391,58.734,62.828,57.172z M28,48C16.953,48,8,39.047,8,28S16.953,8,28,8s20,8.953,20,20S39.047,48,28,48z"
 						></path>
-					</g> <circle fill="#ffffff" cx="28" cy="28" r="20"></circle>
+					</g>
 				</g>
 			</g></svg
 		></button
@@ -46,8 +46,9 @@
 	}
 
 	#search {
-		border-radius: 50px;
+		border-radius: 8px;
 		padding: 0.3rem;
+		width: 15rem;
 		border: 2px solid black;
 	}
 
