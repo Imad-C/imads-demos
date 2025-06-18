@@ -1,12 +1,17 @@
 <script lang="ts">
-	import type { WeatherData } from '$lib/weather';
+	import { fly } from 'svelte/transition';
+	import type { WeatherApiResponse } from '$lib/weather';
+	import WeatherCard from '$components/WeatherCard.svelte';
+	import Search from '$components/Search.svelte';
 
 	let location: string | null = null;
 	let loadingLoactionWeather = false;
-	let locationWeather: WeatherData | null = null;
+	let locationWeather: WeatherApiResponse | null = null;
+	let loactionWeatherError: string | null = null;
 
 	async function fetchWeather(location: string) {
 		loadingLoactionWeather = true;
+		loactionWeatherError = null;
 
 		const res = await fetch('/api/weather', {
 			method: 'POST',
@@ -17,78 +22,68 @@
 		});
 		const data = await res.json();
 
-		locationWeather = data;
+		if (data.error) {
+			loactionWeatherError = data.error;
+			locationWeather = null;
+		} else {
+			locationWeather = data;
+		}
+
 		loadingLoactionWeather = false;
 	}
 </script>
 
-<div class="container">
-	<h1 class="title">Weather</h1>
-	<div class="panel-container">
-		<div class="left-panel">
-			<input bind:value={location} />
-			<button on:click={() => fetchWeather(location || '')}>Go</button>
-		</div>
-		<div class="right-panel">
-			{#if loadingLoactionWeather}
-				<p>Loading...</p>
-			{:else if locationWeather}
-				<h2 class="location-heading">{locationWeather?.location}</h2>
-				<div class="today-panel">
-					<p class="temperature">{locationWeather?.temp}°C</p>
-					<div>
-						<p>Min: {locationWeather?.min}°C</p>
-						<p>Max: {locationWeather?.max}°C</p>
-					</div>
-				</div>
+<h1 class="title">Weather</h1>
 
-				<p class="tomorrow">Tomorrow: {locationWeather?.tomTemp}°C</p>
-			{:else}
-				<p>Search for Somewhere!</p>
-			{/if}
-		</div>
-	</div>
+<div class="search">
+	<Search bind:value={location} handler={() => fetchWeather(location || '')} />
 </div>
 
-<style>
-	.container {
-		display: flex;
-		flex-direction: column;
-		max-width: 900px;
-		margin: 0 auto;
-	}
+{#if loadingLoactionWeather}
+	<p>Loading...</p>
+{:else if loactionWeatherError}
+	<p>Error: {loactionWeatherError}</p>
+{:else if locationWeather?.days}
+	<div class="weather-panel">
+		<p class="location-name" transition:fly={{ x: -500, duration: 500 }}>
+			{locationWeather.resolvedAddress}
+		</p>
+		<div class="weather-cards">
+			{#each locationWeather.days.slice(0, 10) as day, index}
+				<div in:fly|global={{ x: 500, duration: 400, delay: index * 50 }}>
+					<WeatherCard weatherDay={day} />
+				</div>
+			{/each}
+		</div>
+	</div>
+{/if}
 
+<style>
 	.title {
 		text-align: center;
-		margin-bottom: 3rem;
+		padding-bottom: 0.25rem;
+		margin-bottom: 1rem;
+		/* border-bottom: 1px solid var(--gray); */
 	}
 
-	.panel-container {
-		display: flex;
-		justify-content: space-around;
-		text-align: center;
-		/* align-items: center; */
+	.search {
+		margin-bottom: 1.5rem;
 	}
 
-	.left-panel,
-	.right-panel {
-		flex: 1;
-	}
-
-	.right-panel {
+	.weather-panel {
 		padding: 1rem;
-		background: var(--gray-highlight);
-		border-radius: 8px;
 	}
 
-	.today-panel {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		gap: 1rem;
+	.location-name {
+		text-align: start;
+		font-size: 2.5rem;
+		margin-bottom: 2rem;
 	}
 
-	.temperature {
-		font-size: 4rem;
+	.weather-cards {
+		display: grid;
+		grid-template-columns: repeat(5, 1fr);
+		grid-template-rows: repeat(2, 1fr);
+		gap: 3rem;
 	}
 </style>

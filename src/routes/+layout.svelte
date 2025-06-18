@@ -32,13 +32,25 @@
 
 	.layout-main {
 		flex: 1;
+		box-sizing: border-box;
+		padding: 1rem 2rem 1.2rem 2rem;
+		display: flex;
+		flex-direction: column;
+		max-width: 1200px;
+		margin: 0 auto;
+		background: var(--light-gray);
+		width: 100%;
 	}
 
 	.navbar {
+		position: sticky;
+		top: 0;
 		border-bottom: 1px solid var(--gray);
 		display: flex;
+		justify-content: center;
 		gap: 0.1rem;
 		padding: 0.1rem 0.1rem 0 0.1rem;
+		background: white;
 	}
 
 	.navbar-link {
@@ -59,5 +71,10 @@
 	.footer {
 		border-top: 1px solid var(--gray);
 		text-align: center;
+		position: fixed;
+		left: 0;
+		bottom: 0;
+		width: 100%;
+		background: white;
 	}
 </style>
