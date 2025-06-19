@@ -51,6 +51,7 @@
 		gap: 0.1rem;
 		padding: 0.1rem 0.1rem 0 0.1rem;
 		background: white;
+		z-index: 2;
 	}
 
 	.navbar-link {
@@ -76,5 +77,6 @@
 		bottom: 0;
 		width: 100%;
 		background: white;
+		z-index: 2;
 	}
 </style>

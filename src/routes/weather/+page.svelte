@@ -63,7 +63,6 @@
 		text-align: center;
 		padding-bottom: 0.25rem;
 		margin-bottom: 1rem;
-		/* border-bottom: 1px solid var(--gray); */
 	}
 
 	.search {
@@ -81,9 +80,8 @@
 	}
 
 	.weather-cards {
-		display: grid;
-		grid-template-columns: repeat(5, 1fr);
-		grid-template-rows: repeat(2, 1fr);
+		display: flex;
+		flex-wrap: wrap;
 		gap: 3rem;
 	}
 </style>
