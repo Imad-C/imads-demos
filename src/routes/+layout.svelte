@@ -20,6 +20,7 @@
 
 	<footer class="footer">
 		<p>Made by Imad</p>
+		<a href="https://github.com/Imad-C/imads-demos">GitHub repo</a>
 	</footer>
 </div>
 
@@ -70,6 +71,9 @@
 	}
 
 	.footer {
+		display: flex;
+		justify-content: center;
+		gap: 1rem;
 		border-top: 1px solid var(--gray);
 		text-align: center;
 		position: fixed;
