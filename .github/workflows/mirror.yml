@@ -16,7 +16,7 @@ jobs:
 
       - name: Push to public repo
         env:
-          PUBLIC_REPO_TOKEN: ${{ secrets.PUBLIC_REPO_TOKEN }}
+          PUBLIC_REMOTE: https://x-access-token:${{ secrets.PUBLIC_REPO_TOKEN }}@github.com/Imad-C/imads-demos.git
         run: |
-          git remote add public https://x-access-token:$PUBLIC_REPO_TOKEN@github.com/Imad-C/imads-demos.git
+          git remote add public "$PUBLIC_REMOTE"
           git push public main --force
