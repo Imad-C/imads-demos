@@ -44,12 +44,12 @@
 {:else if loactionWeatherError}
 	<p>Error: {loactionWeatherError}</p>
 {:else if locationWeather?.days}
-	<div class="weather-panel">
+	<div>
 		<p class="location-name" transition:fly={{ x: -500, duration: 500 }}>
 			{locationWeather.resolvedAddress}
 		</p>
 		<div class="weather-cards">
-			{#each locationWeather.days.slice(0, 10) as day, index}
+			{#each locationWeather.days as day, index}
 				<div in:fly|global={{ x: 500, duration: 400, delay: index * 50 }}>
 					<WeatherCard weatherDay={day} />
 				</div>
@@ -67,10 +67,6 @@
 
 	.search {
 		margin-bottom: 1.5rem;
-	}
-
-	.weather-panel {
-		padding: 1rem;
 	}
 
 	.location-name {
