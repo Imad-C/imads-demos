@@ -20,7 +20,7 @@
 
 	<footer class="footer">
 		<p>Made by Imad</p>
-		<a href="https://github.com/Imad-C/imads-demos">GitHub</a>
+		<a href="https://github.com/Imad-C/imads-demos">GitHub repo</a>
 	</footer>
 </div>
 
