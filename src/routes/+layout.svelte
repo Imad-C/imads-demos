@@ -20,7 +20,7 @@
 
 	<footer class="footer">
 		<p>Made by Imad</p>
-		<a href="https://github.com/Imad-C/imads-demos">GitHub repo</a>
+		<a href="https://github.com/Imad-C/imads-demos" class="github-link">GitHub</a>
 	</footer>
 </div>
 
@@ -46,18 +46,18 @@
 	.navbar {
 		position: sticky;
 		top: 0;
-		border-bottom: 1px solid var(--gray);
+		border-bottom: 2px solid var(--black);
 		display: flex;
 		justify-content: center;
 		gap: 0.1rem;
 		padding: 0.1rem 0.1rem 0 0.1rem;
-		background: white;
+		background: var(--dark-gray);
 		z-index: 2;
 	}
 
 	.navbar-link {
 		text-decoration: none;
-		color: var(--black);
+		color: var(--white);
 		padding: 0 0.5rem;
 		border-radius: 3px 3px 0px 0px;
 	}
@@ -74,13 +74,30 @@
 		display: flex;
 		justify-content: center;
 		gap: 1rem;
-		border-top: 1px solid var(--gray);
+		border-top: 2px solid var(--black);
 		text-align: center;
 		position: fixed;
 		left: 0;
 		bottom: 0;
 		width: 100%;
-		background: white;
+		background: var(--dark-gray);
+		color: var(--white);
 		z-index: 2;
+	}
+
+	.github-link {
+		text-decoration: underline;
+		color: var(--white);
+	}
+
+	.footer > *:not(:first-child)::before {
+		content: '';
+		display: inline-block;
+		width: 0.2em;
+		height: 0.2em;
+		margin: 0 1.2rem 0 0;
+		vertical-align: middle;
+		border-radius: 50%;
+		background: #fff;
 	}
 </style>

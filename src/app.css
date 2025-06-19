@@ -1,7 +1,9 @@
 :root {
 	--black: rgb(0, 0, 0);
+	--white: rgb(255, 255, 255);
 	--gray: rgb(180, 180, 180);
 	--light-gray: rgb(245, 245, 245);
+	--dark-gray: rgb(70, 70, 70);
 	--gray-highlight: rgb(180, 180, 180, 0.4);
 }
 
