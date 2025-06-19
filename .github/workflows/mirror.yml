@@ -18,5 +18,6 @@ jobs:
         env:
           PUBLIC_REMOTE: https://x-access-token:${{ secrets.PUBLIC_REPO_TOKEN }}@github.com/Imad-C/imads-demos.git
         run: |
+          git remote -v
           git remote add public "$PUBLIC_REMOTE"
           git push public main --force
