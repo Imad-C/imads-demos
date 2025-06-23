@@ -39,10 +39,10 @@
 	<Search bind:value={location} handler={() => fetchWeather(location || '')} />
 </div>
 
-{#if loadingLoactionWeather}
-	<p>Loading...</p>
-{:else if loactionWeatherError}
+{#if loactionWeatherError}
 	<p>Error: {loactionWeatherError}</p>
+{:else if loadingLoactionWeather}
+	<p>Loading...</p>
 {:else if locationWeather?.days}
 	<div>
 		<p class="location-name" transition:fly={{ x: -500, duration: 500 }}>
