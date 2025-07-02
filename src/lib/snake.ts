@@ -1,71 +1,79 @@
-export type Direction = { x: -1 | 0 | 1; y: -1 | 0 | 1 };
+type Coordinate = { x: number; y: number };
 
-class Segment {
-	x: number;
-	y: number;
+export class Game {
+	board: Board;
+	snake: Snake;
 
-	constructor(x: number, y: number) {
-		this.x = x;
-		this.y = y;
-	}
+	constructor(canvas: HTMLCanvasElement, gridSquares: number) {
+		this.board = new Board(canvas, gridSquares);
+		this.snake = new Snake(this.board);
 
-	draw(board: HTMLElement, classNames: string[] = ['snake']) {
-		const segmentElement = document.createElement('div');
-		segmentElement.style.gridColumnStart = String(this.x);
-		segmentElement.style.gridRowStart = String(this.y);
-		for (const className of classNames) segmentElement.classList.add(className);
-		board.appendChild(segmentElement);
-	}
-}
-
-export class Snake {
-	direction: Direction = { x: 0, y: -1 };
-	body: Segment[] = [new Segment(11, 10), new Segment(11, 11)];
-	head: Segment = this.body[0];
-
-	changeDirection(direction: Direction) {
-		if (direction.x && direction.y) return;
-		else if (direction.x && this.direction.x) return;
-		else if (direction.y && this.direction.y) return;
-		else this.direction = direction;
-	}
-
-	move() {
-		// move the tail to the head to 'fake' snake moving by one square
-		this.head = new Segment(this.head.x + this.direction.x, this.head.y + this.direction.y);
-		this.body.unshift(this.head);
-		this.body.pop();
+		this.draw();
 	}
 
 	update() {}
 
-	draw(board: HTMLElement) {
-		board.innerHTML = '';
-		for (let i = 0; i < this.body.length; i++) {
-			this.body[i].draw(board, ['snake', i === 0 ? 'snake-head' : '']);
+	draw() {
+		this.board.draw();
+		this.snake.draw();
+	}
+}
+
+class Board {
+	canvas: HTMLCanvasElement;
+	ctx: CanvasRenderingContext2D;
+	gridSquares: number;
+	squareSize: number;
+
+	constructor(canvas: HTMLCanvasElement, gridSquares: number) {
+		this.canvas = canvas;
+		this.ctx = canvas.getContext('2d')!;
+		this.gridSquares = gridSquares;
+		this.squareSize = canvas.height / gridSquares;
+	}
+
+	coordToCanvas(coord: Coordinate) {
+		return { x: coord.x * this.squareSize, y: coord.y * this.squareSize };
+	}
+
+	draw() {
+		this.ctx.fillStyle = 'gray';
+		this.ctx.strokeStyle = 'black';
+		this.ctx.lineWidth = 1;
+
+		for (let col = 0; col < this.gridSquares; col++) {
+			for (let row = 0; row < this.gridSquares; row++) {
+				const { x, y } = this.coordToCanvas({ x: col, y: row });
+				this.ctx.fillRect(x, y, this.squareSize, this.squareSize);
+				this.ctx.strokeRect(x, y, this.squareSize, this.squareSize);
+			}
 		}
 	}
 }
 
-export class Game {
-	board: HTMLElement;
-	snake: Snake;
-	food: Segment | null = null;
+class Snake {
+	board: Board;
+	body: Coordinate[] = [
+		{ x: 1, y: 1 },
+		{ x: 1, y: 2 }
+	];
 
-	constructor(board: HTMLElement, snake: Snake) {
+	constructor(board: Board) {
 		this.board = board;
-		this.snake = snake;
 	}
 
-	makeFood() {
-		const x = Math.floor(Math.random() * 21);
-		const y = Math.floor(Math.random() * 21);
-		this.food = new Segment(x, y);
+	update() {}
+
+	draw() {
+		const ctx = this.board.ctx;
+		ctx.fillStyle = 'green';
+		ctx.strokeStyle = 'black';
+		ctx.lineWidth = 1;
+
+		for (const segment of this.body) {
+			const { x, y } = this.board.coordToCanvas(segment);
+			ctx.fillRect(x, y, this.board.squareSize, this.board.squareSize);
+			ctx.strokeRect(x, y, this.board.squareSize, this.board.squareSize);
+		}
 	}
-
-	// update() {
-	// 	if (!this.food)
-	// }
-
-	draw() {}
 }
