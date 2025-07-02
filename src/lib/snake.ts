@@ -9,12 +9,11 @@ class Segment {
 		this.y = y;
 	}
 
-	draw(board: HTMLElement, isHead = false) {
+	draw(board: HTMLElement, classNames: string[] = ['snake']) {
 		const segmentElement = document.createElement('div');
 		segmentElement.style.gridColumnStart = String(this.x);
 		segmentElement.style.gridRowStart = String(this.y);
-		segmentElement.classList.add('snake');
-		if (isHead) segmentElement.classList.add('snake-head');
+		for (const className of classNames) segmentElement.classList.add(className);
 		board.appendChild(segmentElement);
 	}
 }
@@ -32,7 +31,7 @@ export class Snake {
 	}
 
 	move() {
-		// make the tail the head
+		// move the tail to the head to 'fake' snake moving by one square
 		this.head = new Segment(this.head.x + this.direction.x, this.head.y + this.direction.y);
 		this.body.unshift(this.head);
 		this.body.pop();
@@ -43,9 +42,30 @@ export class Snake {
 	draw(board: HTMLElement) {
 		board.innerHTML = '';
 		for (let i = 0; i < this.body.length; i++) {
-			this.body[i].draw(board, i === 0);
+			this.body[i].draw(board, ['snake', i === 0 ? 'snake-head' : '']);
 		}
 	}
 }
 
-// export class Game() {}
+export class Game {
+	board: HTMLElement;
+	snake: Snake;
+	food: Segment | null = null;
+
+	constructor(board: HTMLElement, snake: Snake) {
+		this.board = board;
+		this.snake = snake;
+	}
+
+	makeFood() {
+		const x = Math.floor(Math.random() * 21);
+		const y = Math.floor(Math.random() * 21);
+		this.food = new Segment(x, y);
+	}
+
+	// update() {
+	// 	if (!this.food)
+	// }
+
+	draw() {}
+}
