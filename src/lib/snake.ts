@@ -1,3 +1,4 @@
+export type Direction = { x: -1 | 0 | 1; y: -1 | 0 | 1 };
 type Coordinate = { x: number; y: number };
 
 export class Game {
@@ -11,7 +12,9 @@ export class Game {
 		this.draw();
 	}
 
-	update() {}
+	update() {
+		this.snake.update();
+	}
 
 	draw() {
 		this.board.draw();
@@ -53,16 +56,30 @@ class Board {
 
 class Snake {
 	board: Board;
+	direction: Direction = { x: 0, y: -1 };
 	body: Coordinate[] = [
-		{ x: 1, y: 1 },
-		{ x: 1, y: 2 }
+		{ x: 1, y: 5 },
+		{ x: 1, y: 6 },
+		{ x: 1, y: 7 },
+		{ x: 1, y: 8 },
+		{ x: 1, y: 9 }
 	];
+	head = this.body[0];
 
 	constructor(board: Board) {
 		this.board = board;
 	}
 
-	update() {}
+	private move() {
+		// move tail to the head - 'fake' movement by one square
+		this.body.pop();
+		this.head = { x: this.head.x + this.direction.x, y: this.head.y + this.direction.y };
+		this.body.unshift(this.head);
+	}
+
+	update() {
+		this.move();
+	}
 
 	draw() {
 		const ctx = this.board.ctx;
