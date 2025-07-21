@@ -1,33 +1,68 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import type { Direction } from '$lib/snake';
 	import { Game } from '$lib/snake';
 
-	let game: Game;
-	let canvas: HTMLCanvasElement;
+	let game: Game | null = $state(null);
+	let canvas: HTMLCanvasElement | null = $state(null);
 
 	onMount(() => {
-		game = new Game(canvas, 10);
+		game = new Game(canvas!, 10);
+		const unmountKeyPress = mountKeyPress();
+
+		onDestroy(() => {
+			unmountKeyPress();
+		});
 	});
 
-	function handleMove(direction: Direction) {
-		game.snake.direction = direction;
-		game.update();
-		game.draw();
+	function handleChangeDirection(direction: Direction) {
+		game!.snake.direction = direction;
+	}
+
+	function mountKeyPress() {
+		const handleKeyDown = (event: KeyboardEvent) => {
+			switch (event.key) {
+				case 'ArrowUp':
+				case 'w':
+					handleChangeDirection({ x: 0, y: -1 });
+					break;
+				case 'ArrowRight':
+				case 'd':
+					handleChangeDirection({ x: 1, y: 0 });
+					break;
+				case 'ArrowDown':
+				case 's':
+					handleChangeDirection({ x: 0, y: 1 });
+					break;
+				case 'ArrowLeft':
+				case 'a':
+					handleChangeDirection({ x: -1, y: 0 });
+					break;
+			}
+		};
+
+		window.addEventListener('keydown', handleKeyDown);
+
+		return () => {
+			window.removeEventListener('keydown', handleKeyDown);
+		};
 	}
 </script>
 
 <h1>Snake</h1>
 
+{#if game}
+	<div>
+		<div>
+			<button onclick={() => game!.run()}>start</button>
+		</div>
+	</div>
+{:else}
+	<p>Loading...</p>
+{/if}
+
 <div class="snake-container">
 	<canvas width="500" height="500" bind:this={canvas}></canvas>
-</div>
-
-<div>
-	<button onclick={() => handleMove({ x: 0, y: -1 })}>up</button>
-	<button onclick={() => handleMove({ x: 1, y: 0 })}>right</button>
-	<button onclick={() => handleMove({ x: 0, y: 1 })}>down</button>
-	<button onclick={() => handleMove({ x: -1, y: 0 })}>left</button>
 </div>
 
 <style>
@@ -36,7 +71,6 @@
 	}
 
 	.snake-container {
-		/* border: 1px solid black; */
 		display: flex;
 		justify-content: center;
 		align-items: center;

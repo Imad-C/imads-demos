@@ -1,4 +1,4 @@
-export type Direction = { x: -1 | 0 | 1; y: -1 | 0 | 1 };
+export type Direction = { x: 0; y: -1 } | { x: 0; y: 1 } | { x: -1; y: 0 } | { x: 1; y: 0 }; // up down left right
 type Coordinate = { x: number; y: number };
 
 export class Game {
@@ -19,6 +19,13 @@ export class Game {
 	draw() {
 		this.board.draw();
 		this.snake.draw();
+	}
+
+	run() {
+		setInterval(() => {
+			this.update();
+			this.draw();
+		}, 100);
 	}
 }
 
@@ -71,7 +78,7 @@ class Snake {
 	}
 
 	private move() {
-		// move tail to the head - 'fake' movement by one square
+		// remove tail and add to head - 'fake' movement by one square
 		this.body.pop();
 		this.head = { x: this.head.x + this.direction.x, y: this.head.y + this.direction.y };
 		this.body.unshift(this.head);
