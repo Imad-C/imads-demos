@@ -1,5 +1,22 @@
 export type Direction = { x: 0; y: -1 } | { x: 0; y: 1 } | { x: -1; y: 0 } | { x: 1; y: 0 }; // up down left right
-type Coordinate = { x: number; y: number };
+
+class Coordinate {
+	x: number;
+	y: number;
+
+	constructor(x: number, y: number) {
+		this.x = x;
+		this.y = y;
+	}
+
+	equals(other: Coordinate): boolean {
+		return this.x === other.x && this.y === other.y;
+	}
+
+	in(array: Coordinate[]): boolean {
+		return array.some((coord) => this.equals(coord));
+	}
+}
 
 export class Game {
 	board: Board;
@@ -62,7 +79,7 @@ class Board {
 
 		for (let col = 0; col < this.gridSquares; col++) {
 			for (let row = 0; row < this.gridSquares; row++) {
-				const { x, y } = this.coordToCanvas({ x: col, y: row });
+				const { x, y } = this.coordToCanvas(new Coordinate(col, row));
 				this.ctx.fillRect(x, y, this.squareSize, this.squareSize);
 				this.ctx.strokeRect(x, y, this.squareSize, this.squareSize);
 			}
@@ -74,9 +91,11 @@ class Snake {
 	board: Board;
 	direction: Direction = { x: 0, y: -1 };
 	body: Coordinate[] = [
-		{ x: 5, y: 5 },
-		{ x: 5, y: 6 },
-		{ x: 5, y: 7 }
+		new Coordinate(5, 5),
+		new Coordinate(5, 6),
+		new Coordinate(5, 7),
+		new Coordinate(5, 8),
+		new Coordinate(5, 9)
 	];
 	head: Coordinate = this.body[0];
 	alive: boolean = true;
@@ -97,16 +116,19 @@ class Snake {
 	}
 
 	private checkBodyCollision() {
-		// code
+		if (this.head.in(this.body.slice(1))) {
+			this.alive = false;
+		}
 	}
 
 	private move() {
 		// remove tail and add to head - 'fake' movement by one square
 		this.body.pop();
-		this.head = { x: this.head.x + this.direction.x, y: this.head.y + this.direction.y };
+		this.head = new Coordinate(this.head.x + this.direction.x, this.head.y + this.direction.y);
 		this.body.unshift(this.head);
 
 		this.checkWallCollision();
+		this.checkBodyCollision();
 	}
 
 	updateDirection(direction: Direction) {
