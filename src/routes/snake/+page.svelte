@@ -7,7 +7,7 @@
 	let canvas: HTMLCanvasElement | null = $state(null);
 
 	onMount(() => {
-		game = new Game(canvas!, 10);
+		game = new Game(canvas!, 11);
 		const unmountKeyPress = mountKeyPress();
 
 		onDestroy(() => {
@@ -16,7 +16,7 @@
 	});
 
 	function handleChangeDirection(direction: Direction) {
-		game!.snake.direction = direction;
+		game!.snake.updateDirection(direction);
 	}
 
 	function mountKeyPress() {

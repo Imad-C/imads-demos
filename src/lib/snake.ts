@@ -4,6 +4,7 @@ type Coordinate = { x: number; y: number };
 export class Game {
 	board: Board;
 	snake: Snake;
+	runIntervalId: number = 0;
 
 	constructor(canvas: HTMLCanvasElement, gridSquares: number) {
 		this.board = new Board(canvas, gridSquares);
@@ -12,8 +13,16 @@ export class Game {
 		this.draw();
 	}
 
+	reset() {
+		clearInterval(this.runIntervalId);
+		this.snake = new Snake(this.board);
+	}
+
 	update() {
 		this.snake.update();
+		if (this.snake.alive === false) {
+			this.reset();
+		}
 	}
 
 	draw() {
@@ -22,7 +31,7 @@ export class Game {
 	}
 
 	run() {
-		setInterval(() => {
+		this.runIntervalId = setInterval(() => {
 			this.update();
 			this.draw();
 		}, 100);
@@ -65,16 +74,30 @@ class Snake {
 	board: Board;
 	direction: Direction = { x: 0, y: -1 };
 	body: Coordinate[] = [
-		{ x: 1, y: 5 },
-		{ x: 1, y: 6 },
-		{ x: 1, y: 7 },
-		{ x: 1, y: 8 },
-		{ x: 1, y: 9 }
+		{ x: 5, y: 5 },
+		{ x: 5, y: 6 },
+		{ x: 5, y: 7 }
 	];
-	head = this.body[0];
+	head: Coordinate = this.body[0];
+	alive: boolean = true;
 
 	constructor(board: Board) {
 		this.board = board;
+	}
+
+	private checkWallCollision() {
+		if (
+			this.head.x < 0 ||
+			this.head.x >= this.board.gridSquares ||
+			this.head.y < 0 ||
+			this.head.y >= this.board.gridSquares
+		) {
+			this.alive = false;
+		}
+	}
+
+	private checkBodyCollision() {
+		// code
 	}
 
 	private move() {
@@ -82,6 +105,19 @@ class Snake {
 		this.body.pop();
 		this.head = { x: this.head.x + this.direction.x, y: this.head.y + this.direction.y };
 		this.body.unshift(this.head);
+
+		this.checkWallCollision();
+	}
+
+	updateDirection(direction: Direction) {
+		// Don't allow direction to reverse
+		if (this.direction.x !== 0 && direction.x !== 0) {
+			return;
+		} else if (this.direction.y !== 0 && direction.y !== 0) {
+			return;
+		}
+
+		this.direction = direction;
 	}
 
 	update() {
