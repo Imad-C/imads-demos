@@ -16,12 +16,23 @@ class Coordinate {
 	in(array: Coordinate[]): boolean {
 		return array.some((coord) => this.equals(coord));
 	}
+
+	draw(context: CanvasRenderingContext2D, squareSize: number): void {
+		const { x, y } = this.toCanvas(squareSize);
+		context.fillRect(x, y, squareSize, squareSize);
+		context.strokeRect(x, y, squareSize, squareSize);
+	}
+
+	private toCanvas(squareSize: number): { x: number; y: number } {
+		return { x: this.x * squareSize, y: this.y * squareSize };
+	}
 }
 
 export class Game {
 	board: Board;
 	snake: Snake;
 	runIntervalId: number = 0;
+	food: Food | null = null;
 
 	constructor(canvas: HTMLCanvasElement, gridSquares: number) {
 		this.board = new Board(canvas, gridSquares);
@@ -30,24 +41,32 @@ export class Game {
 		this.draw();
 	}
 
-	reset() {
+	checkFoodCollision() {
+		if (this.food?.body.equals(this.snake.head)) {
+			this.snake.addToHead(this.food.body);
+			this.food = null;
+		}
+	}
+
+	reset(): void {
 		clearInterval(this.runIntervalId);
 		this.snake = new Snake(this.board);
 	}
 
-	update() {
+	update(): void {
 		this.snake.update();
-		if (this.snake.alive === false) {
-			this.reset();
-		}
+		if (this.snake.alive === false) this.reset();
+		if (!this.food) this.food = new Food(this);
+		this.checkFoodCollision();
 	}
 
-	draw() {
+	draw(): void {
 		this.board.draw();
 		this.snake.draw();
+		this.food?.draw();
 	}
 
-	run() {
+	run(): void {
 		this.runIntervalId = setInterval(() => {
 			this.update();
 			this.draw();
@@ -58,6 +77,7 @@ export class Game {
 class Board {
 	canvas: HTMLCanvasElement;
 	ctx: CanvasRenderingContext2D;
+	grid: Coordinate[] = [];
 	gridSquares: number;
 	squareSize: number;
 
@@ -66,23 +86,32 @@ class Board {
 		this.ctx = canvas.getContext('2d')!;
 		this.gridSquares = gridSquares;
 		this.squareSize = canvas.height / gridSquares;
+		this.initGrid();
 	}
 
-	coordToCanvas(coord: Coordinate) {
-		return { x: coord.x * this.squareSize, y: coord.y * this.squareSize };
-	}
-
-	draw() {
-		this.ctx.fillStyle = 'gray';
-		this.ctx.strokeStyle = 'black';
-		this.ctx.lineWidth = 1;
-
+	private initGrid(): void {
 		for (let col = 0; col < this.gridSquares; col++) {
 			for (let row = 0; row < this.gridSquares; row++) {
-				const { x, y } = this.coordToCanvas(new Coordinate(col, row));
-				this.ctx.fillRect(x, y, this.squareSize, this.squareSize);
-				this.ctx.strokeRect(x, y, this.squareSize, this.squareSize);
+				this.grid.push(new Coordinate(col, row));
 			}
+		}
+	}
+
+	setStyle({
+		fillStyle,
+		strokeStyle,
+		lineWidth
+	}: { fillStyle?: string; strokeStyle?: string; lineWidth?: number } = {}): void {
+		if (fillStyle) this.ctx.fillStyle = fillStyle;
+		if (strokeStyle) this.ctx.strokeStyle = strokeStyle;
+		if (lineWidth) this.ctx.lineWidth = lineWidth;
+	}
+
+	draw(): void {
+		this.setStyle({ fillStyle: 'gray', strokeStyle: 'black', lineWidth: 1 });
+
+		for (const square of this.grid) {
+			square.draw(this.ctx, this.squareSize);
 		}
 	}
 }
@@ -90,6 +119,7 @@ class Board {
 class Snake {
 	board: Board;
 	direction: Direction = { x: 0, y: -1 };
+	directionChanged: boolean = false; // needed to prevent two direction changes in single 'tick'
 	body: Coordinate[] = [
 		new Coordinate(5, 5),
 		new Coordinate(5, 6),
@@ -104,7 +134,7 @@ class Snake {
 		this.board = board;
 	}
 
-	private checkWallCollision() {
+	private checkWallCollision(): void {
 		if (
 			this.head.x < 0 ||
 			this.head.x >= this.board.gridSquares ||
@@ -115,13 +145,13 @@ class Snake {
 		}
 	}
 
-	private checkBodyCollision() {
+	private checkBodyCollision(): void {
 		if (this.head.in(this.body.slice(1))) {
 			this.alive = false;
 		}
 	}
 
-	private move() {
+	private move(): void {
 		// remove tail and add to head - 'fake' movement by one square
 		this.body.pop();
 		this.head = new Coordinate(this.head.x + this.direction.x, this.head.y + this.direction.y);
@@ -131,7 +161,13 @@ class Snake {
 		this.checkBodyCollision();
 	}
 
-	updateDirection(direction: Direction) {
+	addToHead(coord: Coordinate) {
+		this.body.unshift(coord);
+	}
+
+	updateDirection(direction: Direction): void {
+		if (this.directionChanged) return;
+
 		// Don't allow direction to reverse
 		if (this.direction.x !== 0 && direction.x !== 0) {
 			return;
@@ -140,22 +176,44 @@ class Snake {
 		}
 
 		this.direction = direction;
+		this.directionChanged = true;
 	}
 
-	update() {
+	update(): void {
 		this.move();
+		this.directionChanged = false;
+	}
+
+	draw(): void {
+		this.board.setStyle({ fillStyle: 'green', strokeStyle: 'black', lineWidth: 1 });
+
+		for (const segment of this.body) {
+			segment.draw(this.board.ctx, this.board.squareSize);
+		}
+	}
+}
+
+class Food {
+	game: Game;
+	body: Coordinate;
+
+	constructor(game: Game) {
+		this.game = game;
+		this.body = this.spawn();
+	}
+
+	spawn() {
+		const allowedCoords = [];
+		for (const coord of this.game.board.grid) {
+			if (coord.in(this.game.snake.body)) continue;
+			allowedCoords.push(coord);
+		}
+		return allowedCoords[Math.floor(Math.random() * allowedCoords.length)];
 	}
 
 	draw() {
-		const ctx = this.board.ctx;
-		ctx.fillStyle = 'green';
-		ctx.strokeStyle = 'black';
-		ctx.lineWidth = 1;
-
-		for (const segment of this.body) {
-			const { x, y } = this.board.coordToCanvas(segment);
-			ctx.fillRect(x, y, this.board.squareSize, this.board.squareSize);
-			ctx.strokeRect(x, y, this.board.squareSize, this.board.squareSize);
-		}
+		const board = this.game.board;
+		board.setStyle({ fillStyle: 'orange', strokeStyle: 'black', lineWidth: 1 });
+		this.body.draw(board.ctx, board.squareSize);
 	}
 }
