@@ -5,31 +5,36 @@
 	import Search from '$components/Search.svelte';
 
 	let location: string | null = null;
-	let loadingLoactionWeather = false;
+	let loadingLocationWeather = false;
 	let locationWeather: WeatherApiResponse | null = null;
-	let loactionWeatherError: string | null = null;
+	let locationWeatherError: string | null = null;
 
 	async function fetchWeather(location: string) {
-		loadingLoactionWeather = true;
-		loactionWeatherError = null;
+		loadingLocationWeather = true;
+		locationWeatherError = null;
 
-		const res = await fetch('/api/weather', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ location })
-		});
-		const data = await res.json();
+		try {
+			const res = await fetch('/api/weather', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ location })
+			});
+			const data = await res.json();
 
-		if (data.error) {
-			loactionWeatherError = data.error;
+			if (data.error) {
+				locationWeatherError = data.error;
+				locationWeather = null;
+			} else {
+				locationWeather = data;
+			}
+		} catch (error) {
+			locationWeatherError = 'Failed to fetch weather data.';
 			locationWeather = null;
-		} else {
-			locationWeather = data;
+		} finally {
+			loadingLocationWeather = false;
 		}
-
-		loadingLoactionWeather = false;
 	}
 </script>
 
@@ -39,10 +44,10 @@
 	<Search bind:value={location} handler={() => fetchWeather(location || '')} />
 </div>
 
-{#if loadingLoactionWeather}
+{#if locationWeatherError}
+	<p>Error: {locationWeatherError}</p>
+{:else if loadingLocationWeather}
 	<p>Loading...</p>
-{:else if loactionWeatherError}
-	<p>Error: {loactionWeatherError}</p>
 {:else if locationWeather?.days}
 	<div>
 		<p class="location-name" transition:fly={{ x: -500, duration: 500 }}>

@@ -2,7 +2,7 @@
 	import { page } from '$app/state';
 	import '../app.css';
 
-	const routes = { '/': 'Home', '/weather': 'Weather' };
+	const routes = { '/': 'Home', '/weather': 'Weather', '/snake': 'Snake' };
 </script>
 
 <div class="layout-container">
