@@ -38,8 +38,6 @@
 	}
 </script>
 
-<h1 class="title">Weather</h1>
-
 <div class="search">
 	<Search bind:value={location} handler={() => fetchWeather(location || '')} />
 </div>
@@ -64,12 +62,6 @@
 {/if}
 
 <style>
-	.title {
-		text-align: center;
-		padding-bottom: 0.25rem;
-		margin-bottom: 1rem;
-	}
-
 	.search {
 		margin-bottom: 1.5rem;
 	}

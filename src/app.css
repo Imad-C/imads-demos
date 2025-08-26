@@ -6,6 +6,19 @@
 	--dark-gray: rgb(70, 70, 70);
 	--gray-highlight: rgb(180, 180, 180, 0.4);
 	--blue: rgb(0, 0, 255);
+
+	--colour-black: rgb(35, 35, 35);
+	--colour-raisin: rgb(55, 50, 60);
+	--colour-gray: rgb(150, 150, 155);
+	--colour-silver: rgb(190, 190, 190);
+	--colour-platinum: rgb(230, 230, 230);
+
+	--spacing-small: 5px;
+	--spacing-medium: 15px;
+	--spacing-large: 30px;
+
+	--border-radius-small: 3px;
+	--border-radius-medium: 6px;
 }
 
 @font-face {
@@ -20,15 +33,4 @@
 	src: url('/fonts/Slabo27px-Regular.ttf') format('truetype');
 	font-weight: normal;
 	font-style: normal;
-}
-
-body {
-	margin: 0;
-	padding: 0;
-	font-family: 'Slabo', sans-serif;
-}
-
-h1,
-p {
-	margin: 0;
 }

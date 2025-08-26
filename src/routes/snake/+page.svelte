@@ -49,8 +49,6 @@
 	}
 </script>
 
-<h1>Snake</h1>
-
 {#if game}
 	<div>
 		<div>

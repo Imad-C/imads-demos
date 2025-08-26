@@ -1,17 +1,34 @@
-<h1 class="title">Imad's Demos</h1>
+<script lang="ts">
+	import Card from '$components/Card.svelte';
+</script>
 
-<h2 class="demo-title">Weather</h2>
-<p>
-	A <a href="/weather">weather app</a> using the
-	<a href="https://www.visualcrossing.com/">Visual Crossing</a> API.
-</p>
+<div class="container">
+	<Card>
+		{#snippet content()}
+			<h2 class="demo-title">Weather</h2>
+			<p>
+				A <a href="/weather">weather app</a> using the
+				<a href="https://www.visualcrossing.com/">Visual Crossing</a> API.
+			</p>
+		{/snippet}
+	</Card>
+
+	<Card>
+		{#snippet content()}
+			<h2 class="demo-title">Snake</h2>
+			<p>
+				A <a href="/snake">game of snake</a> using a HTML canvas element.
+			</p>
+		{/snippet}
+	</Card>
+</div>
+
+<button>click</button>
 
 <style>
-	.title {
-		text-align: center;
-	}
-
-	.demo-title {
-		margin-bottom: 0;
+	.container {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-medium);
 	}
 </style>
