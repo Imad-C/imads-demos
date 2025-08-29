@@ -22,19 +22,19 @@
 	.container {
 		display: flex;
 		align-items: center;
-		margin-bottom: var(--spacing-medium);
+		margin: var(--spacing-medium) 0;
 	}
 
 	.title {
 		font-size: 1.5rem;
-		margin-right: var(--spacing-small);
+		margin-left: auto;
+		margin-right: var(--spacing-medium);
 	}
 
 	.navbar {
 		display: flex;
 		gap: var(--spacing-small);
 		padding: var(--spacing-small);
-		margin-right: auto;
 		border: solid var(--colour-silver) 1px;
 		border-radius: var(--border-radius-medium);
 		box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);

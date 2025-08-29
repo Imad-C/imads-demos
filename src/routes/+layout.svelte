@@ -16,7 +16,7 @@
 			{@render children()}
 		</main>
 
-		<footer>
+		<footer class="footer">
 			<a href="https://github.com/Imad-C/imads-demos">GitHub</a>
 		</footer>
 	</div>
@@ -28,21 +28,26 @@
 		justify-content: center;
 		align-items: center;
 		min-height: 100vh;
-		background: var(--colour-black);
 	}
 
 	.container {
-		padding: var(--spacing-small);
+		display: flex;
+		flex-direction: column;
 		width: min(100%, 900px);
 		min-height: 100vh;
 		background: white;
-		box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 	}
 
 	.content {
+		flex: 1;
+		padding: var(--spacing-small);
 		display: flex;
 		flex-direction: column;
 		align-items: start;
-		justify-content: center;
+	}
+
+	.footer {
+		padding: var(--spacing-small) 0;
+		border-top: solid var(--colour-silver) 1px;
 	}
 </style>

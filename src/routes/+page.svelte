@@ -3,9 +3,8 @@
 </script>
 
 <div class="container">
-	<Card>
+	<Card title="Weather">
 		{#snippet content()}
-			<h2 class="demo-title">Weather</h2>
 			<p>
 				A <a href="/weather">weather app</a> using the
 				<a href="https://www.visualcrossing.com/">Visual Crossing</a> API.
@@ -13,9 +12,8 @@
 		{/snippet}
 	</Card>
 
-	<Card>
+	<Card title="Snake">
 		{#snippet content()}
-			<h2 class="demo-title">Snake</h2>
 			<p>
 				A <a href="/snake">game of snake</a> using a HTML canvas element.
 			</p>
@@ -23,12 +21,11 @@
 	</Card>
 </div>
 
-<button>click</button>
-
 <style>
 	.container {
 		display: flex;
 		flex-direction: column;
+		align-items: flex-start;
 		gap: var(--spacing-medium);
 	}
 </style>
