@@ -78,12 +78,12 @@
 		position: absolute;
 		top: -15px;
 		left: -15px;
-		transition: transform 0.7s ease-in-out;
+		transition: transform 0.2s ease-in-out;
 	}
 
 	.dragger:hover {
 		cursor: grab;
-		transform: rotate(180deg);
+		transform: rotate(90deg);
 	}
 
 	.title {

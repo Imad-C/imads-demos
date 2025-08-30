@@ -1,13 +1,20 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import { fly } from 'svelte/transition';
 	import type { WeatherApiResponse } from '$lib/weather';
 	import WeatherCard from '$components/WeatherCard.svelte';
 	import Search from '$components/Search.svelte';
 
-	let location: string | null = null;
+	let location: string = '';
 	let loadingLocationWeather = false;
 	let locationWeather: WeatherApiResponse | null = null;
 	let locationWeatherError: string | null = null;
+
+	const redirectLocation = page.url.searchParams.get('location');
+	if (redirectLocation) {
+		location = redirectLocation;
+		fetchWeather(redirectLocation);
+	}
 
 	async function fetchWeather(location: string) {
 		loadingLocationWeather = true;

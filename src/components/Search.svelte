@@ -1,11 +1,11 @@
 <script lang="ts">
-	export let value: string | null;
-	export let handler: (event: MouseEvent) => void;
+	let { value = $bindable(), handler }: { value: string; handler: (event: MouseEvent) => void } =
+		$props();
 </script>
 
 <div class="search-container">
 	<input bind:value id="search" placeholder="Search Location" />
-	<button on:click={handler} aria-label="search">
+	<button onclick={handler} aria-label="search">
 		<svg
 			version="1.0"
 			id="Layer_1"
