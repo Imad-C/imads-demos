@@ -120,18 +120,22 @@ class Snake {
 	board: Board;
 	direction: Direction = { x: 0, y: -1 };
 	directionChanged: boolean = false; // needed to prevent two direction changes in single 'tick'
-	body: Coordinate[] = [
-		new Coordinate(5, 5),
-		new Coordinate(5, 6),
-		new Coordinate(5, 7),
-		new Coordinate(5, 8),
-		new Coordinate(5, 9)
-	];
-	head: Coordinate = this.body[0];
+	body!: Coordinate[]; // assigned by initSnake in constructor
+	head!: Coordinate; // assigned by initSnake in constructor
 	alive: boolean = true;
 
 	constructor(board: Board) {
 		this.board = board;
+		this.initSnake();
+	}
+
+	private initSnake(): void {
+		const boardCenter = Math.floor(this.board.gridSquares / 2);
+		this.body = [
+			new Coordinate(boardCenter, boardCenter),
+			new Coordinate(boardCenter, boardCenter + 1)
+		];
+		this.head = this.body[0];
 	}
 
 	private checkWallCollision(): void {

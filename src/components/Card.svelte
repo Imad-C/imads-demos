@@ -66,6 +66,7 @@
 		border-radius: var(--border-radius-medium);
 		box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
 		min-width: 300px;
+		background: white;
 	}
 
 	.container > * {
