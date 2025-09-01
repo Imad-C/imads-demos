@@ -1,14 +1,45 @@
-<h1 class="title">Imad's Demos</h1>
+<script lang="ts">
+	import { goto } from '$app/navigation';
+	import Card from '$components/Card.svelte';
+	import Search from '$components/Search.svelte';
+	import Snake from './snake/Snake.svelte';
 
-<h2 class="demo-title">Weather</h2>
-<p>A weather app using the <a href="https://www.visualcrossing.com/">Visual Crossing</a> API.</p>
+	let container: HTMLDivElement;
+	let weatherSearchValue = '';
+
+	function weatherRedirect() {
+		goto(`/weather?location=${weatherSearchValue}`);
+	}
+</script>
+
+<div class="container" bind:this={container}>
+	<Card title="Weather" top="0" left="0" minWidth="250px">
+		{#snippet content()}
+			<p class="card-text">
+				A <a href="/weather">weather app</a> using the
+				<a href="https://www.visualcrossing.com/">Visual Crossing</a> API.
+			</p>
+			<Search bind:value={weatherSearchValue} handler={weatherRedirect} width="97%" />
+		{/snippet}
+	</Card>
+
+	<Card title="Snake" top="0" left="0">
+		{#snippet content()}
+			<p class="card-text">
+				A <a href="/snake">game of snake</a> using a HTML canvas element.
+			</p>
+
+			<Snake gridSquares={5} canvasWidth={200} canvasHeight={200} />
+		{/snippet}
+	</Card>
+</div>
 
 <style>
-	.title {
-		text-align: center;
+	.container {
+		position: relative;
 	}
 
-	.demo-title {
-		margin-bottom: 0;
+	.card-text {
+		margin-bottom: var(--spacing-small);
 	}
 </style>

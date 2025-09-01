@@ -1,48 +1,58 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import { fly } from 'svelte/transition';
 	import type { WeatherApiResponse } from '$lib/weather';
 	import WeatherCard from '$components/WeatherCard.svelte';
 	import Search from '$components/Search.svelte';
 
-	let location: string | null = null;
-	let loadingLoactionWeather = false;
+	let location: string = '';
+	let loadingLocationWeather = false;
 	let locationWeather: WeatherApiResponse | null = null;
-	let loactionWeatherError: string | null = null;
+	let locationWeatherError: string | null = null;
+
+	const redirectLocation = page.url.searchParams.get('location');
+	if (redirectLocation) {
+		location = redirectLocation;
+		fetchWeather(redirectLocation);
+	}
 
 	async function fetchWeather(location: string) {
-		loadingLoactionWeather = true;
-		loactionWeatherError = null;
+		loadingLocationWeather = true;
+		locationWeatherError = null;
 
-		const res = await fetch('/api/weather', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ location })
-		});
-		const data = await res.json();
+		try {
+			const res = await fetch('/api/weather', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ location })
+			});
+			const data = await res.json();
 
-		if (data.error) {
-			loactionWeatherError = data.error;
+			if (data.error) {
+				locationWeatherError = data.error;
+				locationWeather = null;
+			} else {
+				locationWeather = data;
+			}
+		} catch (error) {
+			locationWeatherError = 'Failed to fetch weather data.';
 			locationWeather = null;
-		} else {
-			locationWeather = data;
+		} finally {
+			loadingLocationWeather = false;
 		}
-
-		loadingLoactionWeather = false;
 	}
 </script>
-
-<h1 class="title">Weather</h1>
 
 <div class="search">
 	<Search bind:value={location} handler={() => fetchWeather(location || '')} />
 </div>
 
-{#if loadingLoactionWeather}
+{#if locationWeatherError}
+	<p>Error: {locationWeatherError}</p>
+{:else if loadingLocationWeather}
 	<p>Loading...</p>
-{:else if loactionWeatherError}
-	<p>Error: {loactionWeatherError}</p>
 {:else if locationWeather?.days}
 	<div>
 		<p class="location-name" transition:fly={{ x: -500, duration: 500 }}>
@@ -59,12 +69,6 @@
 {/if}
 
 <style>
-	.title {
-		text-align: center;
-		padding-bottom: 0.25rem;
-		margin-bottom: 1rem;
-	}
-
 	.search {
 		margin-bottom: 1.5rem;
 	}
