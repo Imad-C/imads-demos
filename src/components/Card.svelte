@@ -5,8 +5,15 @@
 		content,
 		title,
 		top = '0px',
-		left = '0px'
-	}: { content: Snippet; title?: string; top?: string; left?: string } = $props();
+		left = '0px',
+		minWidth = '0px'
+	}: {
+		content: Snippet;
+		title?: string;
+		top?: string;
+		left?: string;
+		minWidth?: string;
+	} = $props();
 
 	let container: HTMLDivElement;
 	let dragger: HTMLImageElement;
@@ -46,7 +53,11 @@
 	}
 </script>
 
-<div class="container" bind:this={container} style={`top: ${top}; left: ${left};`}>
+<div
+	class="container"
+	bind:this={container}
+	style={`top: ${top}; left: ${left}; min-width: ${minWidth}`}
+>
 	<img
 		src="/drag.svg"
 		alt="An icon to indicate a draggable UI element."
@@ -65,11 +76,7 @@
 		border: solid var(--colour-silver) 3px;
 		border-radius: var(--border-radius-medium);
 		box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
-		min-width: 300px;
 		background: white;
-	}
-
-	.container > * {
 		padding: var(--spacing-small);
 	}
 
@@ -77,8 +84,8 @@
 		width: 20px;
 		height: 20px;
 		position: absolute;
-		top: -15px;
-		left: -15px;
+		top: -10px;
+		left: -10px;
 		transition: transform 0.2s ease-in-out;
 	}
 
@@ -89,7 +96,7 @@
 
 	.title {
 		font-size: 1.2rem;
-		border-bottom: solid 1px var(--colour-silver);
+		/* border-bottom: solid 1px var(--colour-silver); */
 	}
 
 	.content {

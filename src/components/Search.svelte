@@ -1,9 +1,12 @@
 <script lang="ts">
-	let { value = $bindable(), handler }: { value: string; handler: (event: MouseEvent) => void } =
-		$props();
+	let {
+		value = $bindable(),
+		handler,
+		width = '15rem'
+	}: { value: string; handler: (event: MouseEvent) => void; width?: string } = $props();
 </script>
 
-<div class="search-container">
+<div class="search-container" style="width: {width};">
 	<input bind:value id="search" placeholder="Search Location" />
 	<button onclick={handler} aria-label="search">
 		<svg

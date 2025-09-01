@@ -9,12 +9,18 @@
 		canvasHeight = 500
 	}: { gridSquares?: number; canvasWidth?: number; canvasHeight?: number } = $props();
 
-	let game: Game | null = $state(null);
+	let game = $state<Game | null>(null);
+	let gameRunning = $state<boolean>(false);
 	let canvas: HTMLCanvasElement | null = $state(null);
+	let buttonText = $state('Start');
 
 	onMount(() => {
 		game = new Game(canvas!, gridSquares);
 		const unmountKeyPress = mountKeyPress();
+		game.onStop = () => {
+			gameRunning = false;
+			buttonText = 'Start';
+		};
 
 		onDestroy(() => {
 			unmountKeyPress();
@@ -27,6 +33,7 @@
 
 	function mountKeyPress() {
 		const handleKeyDown = (event: KeyboardEvent) => {
+			if (!gameRunning) return;
 			switch (event.key) {
 				case 'ArrowUp':
 				case 'w':
@@ -53,13 +60,31 @@
 			window.removeEventListener('keydown', handleKeyDown);
 		};
 	}
+
+	function startCountdown(n: number, ms: number = 1000, onFinish: () => void) {
+		if (n === 0) {
+			onFinish?.();
+			return;
+		}
+
+		buttonText = String(n);
+
+		setTimeout(() => {
+			startCountdown(n - 1, ms, onFinish);
+		}, ms);
+	}
+
+	function startGame() {
+		startCountdown(3, 500, () => {
+			game?.run();
+			gameRunning = true;
+		});
+	}
 </script>
 
 <div class="snake-container">
-	{#if game}
-		<button onclick={() => game!.run()} class="start-button">start</button>
-	{:else}
-		<p>Loading...</p>
+	{#if !gameRunning}
+		<button onclick={startGame} class="start-button">{buttonText}</button>
 	{/if}
 	<canvas width={canvasWidth} height={canvasHeight} bind:this={canvas}></canvas>
 </div>
@@ -70,8 +95,12 @@
 	}
 
 	.start-button {
+		height: 50px;
+		width: 50px;
+		border-radius: 50%;
 		position: absolute;
-		left: 46.3%;
-		top: 48%;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
 	}
 </style>

@@ -29,6 +29,7 @@ class Coordinate {
 }
 
 export class Game {
+	running: boolean = false;
 	board: Board;
 	snake: Snake;
 	runIntervalId: number = 0;
@@ -41,6 +42,8 @@ export class Game {
 		this.draw();
 	}
 
+	onStop?: () => void;
+
 	checkFoodCollision() {
 		if (this.food?.body.equals(this.snake.head)) {
 			this.snake.addToHead(this.food.body);
@@ -50,7 +53,9 @@ export class Game {
 
 	reset(): void {
 		clearInterval(this.runIntervalId);
+		this.running = false;
 		this.snake = new Snake(this.board);
+		this.onStop?.();
 	}
 
 	update(): void {
@@ -67,6 +72,7 @@ export class Game {
 	}
 
 	run(): void {
+		this.running = true;
 		this.runIntervalId = setInterval(() => {
 			this.update();
 			this.draw();

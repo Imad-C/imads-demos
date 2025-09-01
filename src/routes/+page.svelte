@@ -4,6 +4,7 @@
 	import Search from '$components/Search.svelte';
 	import Snake from './snake/Snake.svelte';
 
+	let container: HTMLDivElement;
 	let weatherSearchValue = '';
 
 	function weatherRedirect() {
@@ -11,14 +12,14 @@
 	}
 </script>
 
-<div class="container">
-	<Card title="Weather" top="0" left="0">
+<div class="container" bind:this={container}>
+	<Card title="Weather" top="0" left="0" minWidth="250px">
 		{#snippet content()}
 			<p class="card-text">
 				A <a href="/weather">weather app</a> using the
 				<a href="https://www.visualcrossing.com/">Visual Crossing</a> API.
 			</p>
-			<Search bind:value={weatherSearchValue} handler={weatherRedirect} />
+			<Search bind:value={weatherSearchValue} handler={weatherRedirect} width="97%" />
 		{/snippet}
 	</Card>
 
