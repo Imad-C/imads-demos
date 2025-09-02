@@ -13,21 +13,21 @@
 </script>
 
 <div class="container" bind:this={container}>
-	<Card title="Weather" top="0" left="0" minWidth="250px">
+	<Card title="Weather">
 		{#snippet content()}
-			<p class="card-text">
+			<!-- <p class="card-text">
 				A <a href="/weather">weather app</a> using the
 				<a href="https://www.visualcrossing.com/">Visual Crossing</a> API.
-			</p>
-			<Search bind:value={weatherSearchValue} handler={weatherRedirect} width="97%" />
+			</p> -->
+			<Search bind:value={weatherSearchValue} handler={weatherRedirect} />
 		{/snippet}
 	</Card>
 
-	<Card title="Snake" top="0" left="0">
+	<Card title="Snake">
 		{#snippet content()}
-			<p class="card-text">
+			<!-- <p class="card-text">
 				A <a href="/snake">game of snake</a> using a HTML canvas element.
-			</p>
+			</p> -->
 
 			<Snake gridSquares={5} canvasWidth={200} canvasHeight={200} />
 		{/snippet}
@@ -36,7 +36,10 @@
 
 <style>
 	.container {
-		position: relative;
+		display: flex;
+		gap: var(--spacing-small);
+		justify-content: start;
+		align-items: start;
 	}
 
 	.card-text {
