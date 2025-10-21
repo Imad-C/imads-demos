@@ -1,19 +1,22 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
+	import type { SvelteHTMLElements } from 'svelte/elements';
+
+	interface Props {
+		content: Snippet;
+		title?: string;
+		draggable?: boolean;
+		draggableConfig?: draggableConfig;
+		minWidth?: string;
+	}
 
 	let {
 		content,
 		title,
 		draggable = false,
 		draggableConfig = { top: '0px', left: '0px' },
-		minWidth = '0px'
-	}: {
-		content: Snippet;
-		title?: string;
-		draggable?: boolean;
-		draggableConfig?: draggableConfig;
-		minWidth?: string;
-	} = $props();
+		...rest
+	}: Props & SvelteHTMLElements['div'] = $props();
 
 	interface draggableConfig {
 		top: string;
@@ -64,11 +67,7 @@
 	}
 </script>
 
-<div
-	class="container"
-	bind:this={container}
-	style={`${getDraggableStyles()} min-width: ${minWidth}`}
->
+<div class="container" bind:this={container} style={`${getDraggableStyles()}`} {...rest}>
 	{#if draggable}
 		<img
 			src="/drag.svg"
@@ -88,7 +87,7 @@
 	.container {
 		border: solid var(--colour-silver) 3px;
 		border-radius: var(--border-radius-medium);
-		box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+		box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
 		background: white;
 		padding: var(--spacing-small);
 	}

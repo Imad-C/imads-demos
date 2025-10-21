@@ -34,6 +34,7 @@ export class Game {
 	snake: Snake;
 	runIntervalId: number = 0;
 	food: Food | null = null;
+	score: number = 0;
 
 	constructor(canvas: HTMLCanvasElement, gridSquares: number) {
 		this.board = new Board(canvas, gridSquares);
@@ -43,11 +44,14 @@ export class Game {
 	}
 
 	onStop?: () => void;
+	onScore?: (score: number) => void;
 
 	checkFoodCollision() {
 		if (this.food?.body.equals(this.snake.head)) {
 			this.snake.addToHead(this.food.body);
 			this.food = null;
+			this.score++;
+			this.onScore?.(this.score);
 		}
 	}
 
@@ -55,6 +59,8 @@ export class Game {
 		clearInterval(this.runIntervalId);
 		this.running = false;
 		this.snake = new Snake(this.board);
+		this.score = 0;
+		this.onScore?.(this.score);
 		this.onStop?.();
 	}
 

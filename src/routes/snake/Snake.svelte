@@ -10,6 +10,7 @@
 	}: { gridSquares?: number; canvasWidth?: number; canvasHeight?: number } = $props();
 
 	let game = $state<Game | null>(null);
+	let gameScore = $state<number>(0);
 	let gameRunning = $state<boolean>(false);
 	let canvas: HTMLCanvasElement | null = $state(null);
 	let buttonText = $state('Start');
@@ -17,6 +18,9 @@
 	onMount(() => {
 		game = new Game(canvas!, gridSquares);
 		const unmountKeyPress = mountKeyPress();
+		game.onScore = (internalScore: number) => {
+			gameScore = internalScore;
+		};
 		game.onStop = () => {
 			gameRunning = false;
 			buttonText = 'Start';
@@ -87,6 +91,7 @@
 		<button onclick={startGame} class="start-button">{buttonText}</button>
 	{/if}
 	<canvas width={canvasWidth} height={canvasHeight} bind:this={canvas}></canvas>
+	<!-- <p class="score">Current Score: {gameScore}</p> -->
 </div>
 
 <style>
@@ -102,5 +107,11 @@
 		left: 50%;
 		top: 50%;
 		transform: translate(-50%, -50%);
+	}
+
+	.score {
+		font-size: 36px;
+		color: green;
+		font-weight: 800;
 	}
 </style>

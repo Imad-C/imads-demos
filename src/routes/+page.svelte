@@ -15,19 +15,20 @@
 <div class="container" bind:this={container}>
 	<Card title="Weather">
 		{#snippet content()}
-			<!-- <p class="card-text">
+			<p class="card-text">
 				A <a href="/weather">weather app</a> using the
 				<a href="https://www.visualcrossing.com/">Visual Crossing</a> API.
-			</p> -->
+			</p>
 			<Search bind:value={weatherSearchValue} handler={weatherRedirect} />
 		{/snippet}
 	</Card>
 
-	<Card title="Snake">
+	<!-- card width must match snake canvasWidth -->
+	<Card title="Snake" style="width: 200px">
 		{#snippet content()}
-			<!-- <p class="card-text">
+			<p class="card-text">
 				A <a href="/snake">game of snake</a> using a HTML canvas element.
-			</p> -->
+			</p>
 
 			<Snake gridSquares={5} canvasWidth={200} canvasHeight={200} />
 		{/snippet}
