@@ -59,9 +59,10 @@ export class Game {
 		clearInterval(this.runIntervalId);
 		this.running = false;
 		this.snake = new Snake(this.board);
+		// Need onStop before onScore so onStop has access to final score before score is reset
+		this.onStop?.();
 		this.score = 0;
 		this.onScore?.(this.score);
-		this.onStop?.();
 	}
 
 	update(): void {

@@ -44,6 +44,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: start;
+		font-family: 'Slabo', sans-serif;
 	}
 
 	.footer {
