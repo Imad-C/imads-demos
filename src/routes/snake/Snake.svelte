@@ -109,11 +109,13 @@
 	}
 
 	.start-button {
-		width: 100px;
-		height: 50px;
-		background: blue;
-		border: 2px solid black;
-		border-radius: 10px;
+		width: 130px;
+		height: 75px;
+		background: rgb(167, 167, 240);
+		/* border: 2px solid black; */
+		border-bottom: 5px solid rgb(94, 94, 240);
+		border-radius: 16px;
+		box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
 		position: absolute;
 		left: 50%;
 		top: 50%;
@@ -121,7 +123,7 @@
 	}
 
 	.start-button:hover {
-		opacity: 80%;
+		opacity: 95%;
 		cursor: pointer;
 	}
 </style>

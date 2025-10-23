@@ -23,6 +23,21 @@ class Coordinate {
 		context.strokeRect(x, y, squareSize, squareSize);
 	}
 
+	drawRounded(context: CanvasRenderingContext2D, squareSize: number): void {
+		const { x, y } = this.toCanvas(squareSize);
+
+		const shrunkSquareSize = squareSize * 0.96; // shrink factor
+		const padding = (squareSize - shrunkSquareSize) / 2; // padding must go on either side, so divide by 2
+		const xPadded = x + padding;
+		const yPadded = y + padding;
+
+		context.beginPath();
+		context.roundRect?.(xPadded, yPadded, shrunkSquareSize, shrunkSquareSize, [4]);
+		context.fill();
+
+		return;
+	}
+
 	private toCanvas(squareSize: number): { x: number; y: number } {
 		return { x: this.x * squareSize, y: this.y * squareSize };
 	}
@@ -124,7 +139,7 @@ class Board {
 		this.setStyle({ fillStyle: 'gray', strokeStyle: 'black', lineWidth: 1 });
 
 		for (const square of this.grid) {
-			square.draw(this.ctx, this.squareSize);
+			square.drawRounded(this.ctx, this.squareSize);
 		}
 	}
 }
@@ -205,7 +220,7 @@ class Snake {
 		this.board.setStyle({ fillStyle: 'green', strokeStyle: 'black', lineWidth: 1 });
 
 		for (const segment of this.body) {
-			segment.draw(this.board.ctx, this.board.squareSize);
+			segment.drawRounded(this.board.ctx, this.board.squareSize);
 		}
 	}
 }
@@ -231,6 +246,6 @@ class Food {
 	draw() {
 		const board = this.game.board;
 		board.setStyle({ fillStyle: 'orange', strokeStyle: 'black', lineWidth: 1 });
-		this.body.draw(board.ctx, board.squareSize);
+		this.body.drawRounded(board.ctx, board.squareSize);
 	}
 }
