@@ -136,11 +136,14 @@ class Board {
 	}
 
 	draw(): void {
-		this.setStyle({ fillStyle: 'gray', strokeStyle: 'black', lineWidth: 1 });
-
 		for (const square of this.grid) {
+			// choose color based on coordinate parity to alternate colours
+			const isDark = (square.x + square.y) % 2 === 0;
+			this.setStyle({ fillStyle: isDark ? 'rgb(240, 240, 240)' : 'rgb(225, 225, 225)' });
 			square.drawRounded(this.ctx, this.squareSize);
 		}
+
+		return;
 	}
 }
 
