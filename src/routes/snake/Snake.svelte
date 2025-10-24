@@ -23,6 +23,7 @@
 
 	let game = $state<Game | null>(null);
 	let gameRunning = $state<boolean>(false);
+	let startButtonDisabled = $state<boolean>(false);
 	let canvas: HTMLCanvasElement | null = $state(null);
 	let buttonText = $state('Start');
 
@@ -34,6 +35,7 @@
 		};
 		game.onStop = () => {
 			gameRunning = false;
+			startButtonDisabled = false;
 			buttonText = 'Start';
 			useOnStop();
 		};
@@ -91,6 +93,7 @@
 	}
 
 	function startGame() {
+		startButtonDisabled = true;
 		startCountdown(3, 500, () => {
 			game?.run();
 			gameRunning = true;
@@ -102,6 +105,7 @@
 	{#if !gameRunning}
 		<button
 			onclick={startGame}
+			disabled={startButtonDisabled}
 			class="start-button"
 			style="width: {canvasWidth}px; height: {canvasHeight}px">{buttonText}</button
 		>

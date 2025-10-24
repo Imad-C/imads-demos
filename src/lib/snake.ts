@@ -38,6 +38,30 @@ class Coordinate {
 		return;
 	}
 
+	// WIP: Draw direction of Coord - requires a direction property
+	// drawDirection(context: CanvasRenderingContext2D, squareSize: number): void {
+	// 	if (!this.direction) {
+	// 		throw new Error('Cannot draw Coordiante direction with no direction property.');
+	// 	}
+
+	// 	const { x, y } = this.toCanvas(squareSize);
+	// 	const halfSquare = squareSize / 2;
+	// 	const xMid = x + halfSquare;
+	// 	const yMid = y + halfSquare;
+
+	// 	// direction vector
+	// 	const dx = this.direction.x;
+	// 	const dy = this.direction.y;
+
+	// 	const xEdge = xMid + dx * halfSquare * 0.9;
+	// 	const yEdge = yMid + dy * halfSquare * 0.9;
+
+	// 	context.beginPath();
+	// 	context.moveTo(xMid, yMid);
+	// 	context.lineTo(xEdge, yEdge);
+	// 	context.stroke();
+	// }
+
 	private toCanvas(squareSize: number): { x: number; y: number } {
 		return { x: this.x * squareSize, y: this.y * squareSize };
 	}
