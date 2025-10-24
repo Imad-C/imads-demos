@@ -19,6 +19,7 @@ class Coordinate {
 
 	draw(context: CanvasRenderingContext2D, squareSize: number): void {
 		const { x, y } = this.toCanvas(squareSize);
+		context.beginPath();
 		context.fillRect(x, y, squareSize, squareSize);
 		context.strokeRect(x, y, squareSize, squareSize);
 	}
@@ -174,6 +175,8 @@ class Board {
 	}
 
 	draw(): void {
+		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
 		for (const square of this.grid) {
 			// choose color based on coordinate parity to alternate colours
 			const isDark = (square.x + square.y) % 2 === 0;
