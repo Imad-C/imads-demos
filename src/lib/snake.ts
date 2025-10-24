@@ -19,9 +19,49 @@ class Coordinate {
 
 	draw(context: CanvasRenderingContext2D, squareSize: number): void {
 		const { x, y } = this.toCanvas(squareSize);
+		context.beginPath();
 		context.fillRect(x, y, squareSize, squareSize);
 		context.strokeRect(x, y, squareSize, squareSize);
 	}
+
+	drawRounded(context: CanvasRenderingContext2D, squareSize: number): void {
+		const { x, y } = this.toCanvas(squareSize);
+
+		const shrunkSquareSize = squareSize * 0.96; // shrink factor
+		const padding = (squareSize - shrunkSquareSize) / 2; // padding must go on either side, so divide by 2
+		const xPadded = x + padding;
+		const yPadded = y + padding;
+
+		context.beginPath();
+		context.roundRect(xPadded, yPadded, shrunkSquareSize, shrunkSquareSize, [4]);
+		context.fill();
+
+		return;
+	}
+
+	// WIP: Draw direction of Coord - requires a direction property
+	// drawDirection(context: CanvasRenderingContext2D, squareSize: number): void {
+	// 	if (!this.direction) {
+	// 		throw new Error('Cannot draw Coordiante direction with no direction property.');
+	// 	}
+
+	// 	const { x, y } = this.toCanvas(squareSize);
+	// 	const halfSquare = squareSize / 2;
+	// 	const xMid = x + halfSquare;
+	// 	const yMid = y + halfSquare;
+
+	// 	// direction vector
+	// 	const dx = this.direction.x;
+	// 	const dy = this.direction.y;
+
+	// 	const xEdge = xMid + dx * halfSquare * 0.9;
+	// 	const yEdge = yMid + dy * halfSquare * 0.9;
+
+	// 	context.beginPath();
+	// 	context.moveTo(xMid, yMid);
+	// 	context.lineTo(xEdge, yEdge);
+	// 	context.stroke();
+	// }
 
 	private toCanvas(squareSize: number): { x: number; y: number } {
 		return { x: this.x * squareSize, y: this.y * squareSize };
@@ -34,6 +74,7 @@ export class Game {
 	snake: Snake;
 	runIntervalId: number = 0;
 	food: Food | null = null;
+	score: number = 0;
 
 	constructor(canvas: HTMLCanvasElement, gridSquares: number) {
 		this.board = new Board(canvas, gridSquares);
@@ -43,11 +84,14 @@ export class Game {
 	}
 
 	onStop?: () => void;
+	onScore?: (score: number) => void;
 
 	checkFoodCollision() {
 		if (this.food?.body.equals(this.snake.head)) {
 			this.snake.addToHead(this.food.body);
 			this.food = null;
+			this.score++;
+			this.onScore?.(this.score);
 		}
 	}
 
@@ -55,7 +99,10 @@ export class Game {
 		clearInterval(this.runIntervalId);
 		this.running = false;
 		this.snake = new Snake(this.board);
+		// Need onStop before onScore so onStop has access to final score before score is reset
 		this.onStop?.();
+		this.score = 0;
+		this.onScore?.(this.score);
 	}
 
 	update(): void {
@@ -113,12 +160,32 @@ class Board {
 		if (lineWidth) this.ctx.lineWidth = lineWidth;
 	}
 
+	private drawBorder(): void {
+		this.setStyle({ strokeStyle: 'black', lineWidth: 1 });
+		const half = this.ctx.lineWidth / 2;
+		this.ctx.beginPath();
+		this.ctx.roundRect(
+			half,
+			half,
+			this.canvas.width - this.ctx.lineWidth,
+			this.canvas.height - this.ctx.lineWidth,
+			[4]
+		);
+		this.ctx.stroke();
+	}
+
 	draw(): void {
-		this.setStyle({ fillStyle: 'gray', strokeStyle: 'black', lineWidth: 1 });
+		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
 		for (const square of this.grid) {
-			square.draw(this.ctx, this.squareSize);
+			// choose color based on coordinate parity to alternate colours
+			const isDark = (square.x + square.y) % 2 === 0;
+			this.setStyle({ fillStyle: isDark ? 'rgb(240, 240, 240)' : 'rgb(225, 225, 225)' });
+			square.drawRounded(this.ctx, this.squareSize);
 		}
+		this.drawBorder();
+
+		return;
 	}
 }
 
@@ -198,7 +265,7 @@ class Snake {
 		this.board.setStyle({ fillStyle: 'green', strokeStyle: 'black', lineWidth: 1 });
 
 		for (const segment of this.body) {
-			segment.draw(this.board.ctx, this.board.squareSize);
+			segment.drawRounded(this.board.ctx, this.board.squareSize);
 		}
 	}
 }
@@ -224,6 +291,6 @@ class Food {
 	draw() {
 		const board = this.game.board;
 		board.setStyle({ fillStyle: 'orange', strokeStyle: 'black', lineWidth: 1 });
-		this.body.draw(board.ctx, board.squareSize);
+		this.body.drawRounded(board.ctx, board.squareSize);
 	}
 }

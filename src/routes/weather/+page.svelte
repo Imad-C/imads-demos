@@ -46,7 +46,7 @@
 </script>
 
 <div class="search">
-	<Search bind:value={location} handler={() => fetchWeather(location || '')} />
+	<Search bind:value={location} handler={() => fetchWeather(location || '')} width="300px" />
 </div>
 
 {#if locationWeatherError}

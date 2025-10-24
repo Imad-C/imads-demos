@@ -1,29 +1,37 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
+	import type { SvelteHTMLElements } from 'svelte/elements';
+
+	interface Props {
+		content: Snippet;
+		title?: string;
+		draggable?: boolean;
+		draggableConfig?: draggableConfig;
+		minWidth?: string;
+	}
 
 	let {
 		content,
 		title,
-		top = '0px',
-		left = '0px',
-		minWidth = '0px'
-	}: {
-		content: Snippet;
-		title?: string;
-		top?: string;
-		left?: string;
-		minWidth?: string;
-	} = $props();
+		draggable = false,
+		draggableConfig = { top: '0px', left: '0px' },
+		...rest
+	}: Props & SvelteHTMLElements['div'] = $props();
+
+	interface draggableConfig {
+		top: string;
+		left: string;
+	}
 
 	let container: HTMLDivElement;
-	let dragger: HTMLImageElement;
+	let dragger = $state<HTMLImageElement>();
 	let pos1 = 0;
 	let pos2 = 0;
 	let pos3 = 0;
 	let pos4 = 0;
 
 	onMount(() => {
-		dragger.onmousedown = dragMouseDown;
+		if (dragger) dragger.onmousedown = dragMouseDown;
 	});
 
 	function dragMouseDown(e: MouseEvent) {
@@ -51,19 +59,24 @@
 		document.onmousemove = null;
 		console.log('closeDragElement');
 	}
+
+	function getDraggableStyles() {
+		if (draggable)
+			return `position: absolute; top: ${draggableConfig?.top}; left: ${draggableConfig?.left};`;
+		return '';
+	}
 </script>
 
-<div
-	class="container"
-	bind:this={container}
-	style={`top: ${top}; left: ${left}; min-width: ${minWidth}`}
->
-	<img
-		src="/drag.svg"
-		alt="An icon to indicate a draggable UI element."
-		class="dragger"
-		bind:this={dragger}
-	/>
+<div class="container" bind:this={container} style={`${getDraggableStyles()}`} {...rest}>
+	{#if draggable}
+		<img
+			src="/drag.svg"
+			alt="An icon to indicate a draggable UI element."
+			class="dragger"
+			bind:this={dragger}
+		/>
+	{/if}
+
 	<p class="title">{title}</p>
 	<div class="content">
 		{@render content()}
@@ -72,10 +85,9 @@
 
 <style>
 	.container {
-		position: absolute;
 		border: solid var(--colour-silver) 3px;
 		border-radius: var(--border-radius-medium);
-		box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+		box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
 		background: white;
 		padding: var(--spacing-small);
 	}
@@ -95,8 +107,9 @@
 	}
 
 	.title {
+		text-align: center;
 		font-size: 1.2rem;
-		/* border-bottom: solid 1px var(--colour-silver); */
+		margin-bottom: var(--spacing-small);
 	}
 
 	.content {
