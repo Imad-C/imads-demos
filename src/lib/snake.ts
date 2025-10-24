@@ -32,7 +32,7 @@ class Coordinate {
 		const yPadded = y + padding;
 
 		context.beginPath();
-		context.roundRect?.(xPadded, yPadded, shrunkSquareSize, shrunkSquareSize, [4]);
+		context.roundRect(xPadded, yPadded, shrunkSquareSize, shrunkSquareSize, [4]);
 		context.fill();
 
 		return;
@@ -135,6 +135,20 @@ class Board {
 		if (lineWidth) this.ctx.lineWidth = lineWidth;
 	}
 
+	private drawBorder(): void {
+		this.setStyle({ strokeStyle: 'black', lineWidth: 1 });
+		const half = this.ctx.lineWidth / 2;
+		this.ctx.beginPath();
+		this.ctx.roundRect(
+			half,
+			half,
+			this.canvas.width - this.ctx.lineWidth,
+			this.canvas.height - this.ctx.lineWidth,
+			[4]
+		);
+		this.ctx.stroke();
+	}
+
 	draw(): void {
 		for (const square of this.grid) {
 			// choose color based on coordinate parity to alternate colours
@@ -142,6 +156,7 @@ class Board {
 			this.setStyle({ fillStyle: isDark ? 'rgb(240, 240, 240)' : 'rgb(225, 225, 225)' });
 			square.drawRounded(this.ctx, this.squareSize);
 		}
+		this.drawBorder();
 
 		return;
 	}

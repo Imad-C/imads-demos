@@ -2,6 +2,7 @@
 	import { onMount, onDestroy } from 'svelte';
 	import type { Direction } from '$lib/snake';
 	import { Game } from '$lib/snake';
+	import type { SvelteHTMLElements } from 'svelte/elements';
 
 	interface Props {
 		gridSquares?: number;
@@ -16,8 +17,9 @@
 		canvasWidth = 500,
 		canvasHeight = 500,
 		useOnScore = () => {},
-		useOnStop = () => {}
-	}: Props = $props();
+		useOnStop = () => {},
+		...rest
+	}: Props & SvelteHTMLElements['div'] = $props();
 
 	let game = $state<Game | null>(null);
 	let gameRunning = $state<boolean>(false);
@@ -96,9 +98,13 @@
 	}
 </script>
 
-<div class="snake-container">
+<div class="snake-container" {...rest}>
 	{#if !gameRunning}
-		<button onclick={startGame} class="start-button">{buttonText}</button>
+		<button
+			onclick={startGame}
+			class="start-button"
+			style="width: {canvasWidth}px; height: {canvasHeight}px">{buttonText}</button
+		>
 	{/if}
 	<canvas width={canvasWidth} height={canvasHeight} bind:this={canvas}></canvas>
 </div>
@@ -109,13 +115,9 @@
 	}
 
 	.start-button {
-		width: 130px;
-		height: 75px;
 		background: rgb(167, 167, 240);
-		/* border: 2px solid black; */
-		border-bottom: 5px solid rgb(94, 94, 240);
-		border-radius: 16px;
-		box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+		opacity: 20%;
+		border-radius: 4px;
 		position: absolute;
 		left: 50%;
 		top: 50%;
