@@ -25,7 +25,7 @@
 	let gameRunning = $state<boolean>(false);
 	let startButtonDisabled = $state<boolean>(false);
 	let canvas: HTMLCanvasElement | null = $state(null);
-	let buttonText = $state('Start');
+	let buttonText = $state('GO');
 
 	onMount(() => {
 		game = new Game(canvas!, gridSquares);
@@ -119,13 +119,15 @@
 	}
 
 	.start-button {
-		background: rgb(167, 167, 240);
-		opacity: 20%;
+		background: var(--colour-gray);
+		opacity: 50%;
 		border-radius: 4px;
 		position: absolute;
 		left: 50%;
 		top: 50%;
 		transform: translate(-50%, -50%);
+		color: var(--colour-platinum);
+		font-size: 5rem;
 	}
 
 	.start-button:hover {
