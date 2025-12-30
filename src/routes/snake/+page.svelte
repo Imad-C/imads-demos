@@ -1,12 +1,20 @@
 <script lang="ts">
 	import Snake from './Snake.svelte';
-	import Circle from '$components/Circle.svelte';
 
 	let gameScore = $state<number>(0);
 	let highScore = $state<number>(0);
+	let flashScore = $state<boolean>(false);
+
+	function triggerFlashScore() {
+		flashScore = true;
+		setTimeout(() => {
+			flashScore = false;
+		}, 500);
+	}
 
 	function useOnScore(score: number) {
 		gameScore = score;
+		triggerFlashScore();
 	}
 
 	function useOnStop() {
@@ -23,7 +31,7 @@
 		<div class="high-current">
 			<div class="score">
 				<p>Current Score</p>
-				<p class="score-number">{gameScore}</p>
+				<p class="score-number" class:flash-score={flashScore}>{gameScore}</p>
 			</div>
 
 			<div class="score">
@@ -69,5 +77,18 @@
 		height: 4.5rem;
 		font-size: 3rem;
 		box-shadow: 0px 0px 0px 2px darkgreen;
+		transition:
+			box-shadow 0.3s,
+			background 0.3s;
+	}
+
+	.score-number:hover {
+		background: lightgreen;
+		box-shadow: 0px 0px 6px 3px rgb(0, 50, 0);
+	}
+
+	.flash-score {
+		background: lightgreen;
+		box-shadow: 0px 0px 6px 3px rgb(0, 50, 0);
 	}
 </style>

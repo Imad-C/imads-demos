@@ -36,7 +36,7 @@
 		game.onStop = () => {
 			gameRunning = false;
 			startButtonDisabled = false;
-			buttonText = 'Start';
+			buttonText = 'GO';
 			useOnStop();
 		};
 
@@ -107,13 +107,17 @@
 			onclick={startGame}
 			disabled={startButtonDisabled}
 			class="start-button"
-			style="width: {canvasWidth}px; height: {canvasHeight}px">{buttonText}</button
+			style="width: {canvasWidth * 0.8}px; height: {canvasHeight * 0.8}px">{buttonText}</button
 		>
 	{/if}
-	<canvas width={canvasWidth} height={canvasHeight} bind:this={canvas}></canvas>
+	<canvas class="canvas" width={canvasWidth} height={canvasHeight} bind:this={canvas}></canvas>
 </div>
 
 <style>
+	.canvas {
+		width: 100%;
+	}
+
 	.snake-container {
 		position: relative;
 	}
