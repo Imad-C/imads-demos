@@ -6,6 +6,7 @@
 
 	interface Props {
 		gridSquares?: number;
+		gameSpeedMultiplier?: number;
 		canvasWidth?: number;
 		canvasHeight?: number;
 		useOnScore?: Function;
@@ -14,6 +15,7 @@
 
 	let {
 		gridSquares = 11,
+		gameSpeedMultiplier = 1,
 		canvasWidth = 500,
 		canvasHeight = 500,
 		useOnScore = () => {},
@@ -25,10 +27,10 @@
 	let gameRunning = $state<boolean>(false);
 	let startButtonDisabled = $state<boolean>(false);
 	let canvas: HTMLCanvasElement | null = $state(null);
-	let buttonText = $state('Start');
+	let buttonText = $state('GO');
 
 	onMount(() => {
-		game = new Game(canvas!, gridSquares);
+		game = new Game(canvas!, gridSquares, gameSpeedMultiplier);
 		const unmountKeyPress = mountKeyPress();
 		game.onScore = (internalScore: number) => {
 			useOnScore(internalScore);
@@ -36,7 +38,7 @@
 		game.onStop = () => {
 			gameRunning = false;
 			startButtonDisabled = false;
-			buttonText = 'Start';
+			buttonText = 'GO';
 			useOnStop();
 		};
 
@@ -107,25 +109,31 @@
 			onclick={startGame}
 			disabled={startButtonDisabled}
 			class="start-button"
-			style="width: {canvasWidth}px; height: {canvasHeight}px">{buttonText}</button
+			style="width: {canvasWidth * 0.8}px; height: {canvasHeight * 0.8}px">{buttonText}</button
 		>
 	{/if}
-	<canvas width={canvasWidth} height={canvasHeight} bind:this={canvas}></canvas>
+	<canvas class="canvas" width={canvasWidth} height={canvasHeight} bind:this={canvas}></canvas>
 </div>
 
 <style>
+	.canvas {
+		width: 100%;
+	}
+
 	.snake-container {
 		position: relative;
 	}
 
 	.start-button {
-		background: rgb(167, 167, 240);
-		opacity: 20%;
+		background: var(--colour-gray);
+		opacity: 50%;
 		border-radius: 4px;
 		position: absolute;
 		left: 50%;
 		top: 50%;
 		transform: translate(-50%, -50%);
+		color: var(--colour-platinum);
+		font-size: 5rem;
 	}
 
 	.start-button:hover {

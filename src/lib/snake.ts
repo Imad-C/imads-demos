@@ -72,13 +72,16 @@ export class Game {
 	running: boolean = false;
 	board: Board;
 	snake: Snake;
+	gameSpeed: number = 100; // Game updates 10 times every second
 	runIntervalId: number = 0;
 	food: Food | null = null;
 	score: number = 0;
 
-	constructor(canvas: HTMLCanvasElement, gridSquares: number) {
+	constructor(canvas: HTMLCanvasElement, gridSquares: number, gameSpeedMultiplier: number = 1) {
 		this.board = new Board(canvas, gridSquares);
 		this.snake = new Snake(this.board);
+		// devide here as a smaller `gameSpeed` means a smaller interval in `run()`
+		this.gameSpeed /= gameSpeedMultiplier;
 
 		this.draw();
 	}
@@ -123,7 +126,7 @@ export class Game {
 		this.runIntervalId = setInterval(() => {
 			this.update();
 			this.draw();
-		}, 100);
+		}, this.gameSpeed);
 	}
 }
 

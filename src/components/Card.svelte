@@ -1,82 +1,19 @@
 <script lang="ts">
-	import { onMount, type Snippet } from 'svelte';
+	import { type Snippet } from 'svelte';
 	import type { SvelteHTMLElements } from 'svelte/elements';
 
 	interface Props {
 		content: Snippet;
 		title?: string;
-		draggable?: boolean;
-		draggableConfig?: draggableConfig;
 		minWidth?: string;
 	}
 
-	let {
-		content,
-		title,
-		draggable = false,
-		draggableConfig = { top: '0px', left: '0px' },
-		...rest
-	}: Props & SvelteHTMLElements['div'] = $props();
-
-	interface draggableConfig {
-		top: string;
-		left: string;
-	}
+	let { content, title, ...rest }: Props & SvelteHTMLElements['div'] = $props();
 
 	let container: HTMLDivElement;
-	let dragger = $state<HTMLImageElement>();
-	let pos1 = 0;
-	let pos2 = 0;
-	let pos3 = 0;
-	let pos4 = 0;
-
-	onMount(() => {
-		if (dragger) dragger.onmousedown = dragMouseDown;
-	});
-
-	function dragMouseDown(e: MouseEvent) {
-		e.preventDefault();
-		pos3 = e.clientX;
-		pos4 = e.clientY;
-		document.onmouseup = closeDragElement;
-		document.onmousemove = elementDrag;
-		console.log('dragMouseDown');
-	}
-
-	function elementDrag(e: MouseEvent) {
-		e.preventDefault();
-		pos1 = pos3 - e.clientX;
-		pos2 = pos4 - e.clientY;
-		pos3 = e.clientX;
-		pos4 = e.clientY;
-		container.style.top = container.offsetTop - pos2 + 'px';
-		container.style.left = container.offsetLeft - pos1 + 'px';
-		console.log('elementDrag');
-	}
-
-	function closeDragElement() {
-		document.onmouseup = null;
-		document.onmousemove = null;
-		console.log('closeDragElement');
-	}
-
-	function getDraggableStyles() {
-		if (draggable)
-			return `position: absolute; top: ${draggableConfig?.top}; left: ${draggableConfig?.left};`;
-		return '';
-	}
 </script>
 
-<div class="container" bind:this={container} style={`${getDraggableStyles()}`} {...rest}>
-	{#if draggable}
-		<img
-			src="/drag.svg"
-			alt="An icon to indicate a draggable UI element."
-			class="dragger"
-			bind:this={dragger}
-		/>
-	{/if}
-
+<div class="container" bind:this={container} {...rest}>
 	<p class="title">{title}</p>
 	<div class="content">
 		{@render content()}
@@ -90,20 +27,6 @@
 		box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
 		background: white;
 		padding: var(--spacing-small);
-	}
-
-	.dragger {
-		width: 20px;
-		height: 20px;
-		position: absolute;
-		top: -10px;
-		left: -10px;
-		transition: transform 0.2s ease-in-out;
-	}
-
-	.dragger:hover {
-		cursor: grab;
-		transform: rotate(90deg);
 	}
 
 	.title {
