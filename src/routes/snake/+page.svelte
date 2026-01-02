@@ -4,24 +4,30 @@
 	let gameScore = $state<number>(0);
 	let highScore = $state<number>(0);
 	let flashScore = $state<boolean>(false);
+	let flashHighScore = $state<boolean>(false);
 	let gameSpeed = $state<number>(2);
 	let gameSpeedMultiplier = $derived(1 + gameSpeed * 0.1);
 
-	function triggerFlashScore() {
-		flashScore = true;
+	function triggerFlashScore(flashSetter: (flash: boolean) => void) {
+		flashSetter(true);
 		setTimeout(() => {
-			flashScore = false;
+			flashSetter(false);
 		}, 500);
 	}
 
 	function useOnScore(score: number) {
 		gameScore = score;
-		triggerFlashScore();
+		triggerFlashScore((flash) => {
+			flashScore = flash;
+		});
 	}
 
 	function useOnStop() {
 		if (gameScore > highScore) {
 			highScore = gameScore;
+			triggerFlashScore((flash) => {
+				flashHighScore = flash;
+			});
 		}
 	}
 </script>
@@ -40,7 +46,7 @@
 
 			<div class="score">
 				<p>High Score</p>
-				<p class="score-number">{highScore}</p>
+				<p class="score-number" class:flash-score={flashHighScore}>{highScore}</p>
 			</div>
 		</div>
 
