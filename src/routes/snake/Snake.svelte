@@ -6,6 +6,7 @@
 
 	interface Props {
 		gridSquares?: number;
+		gameSpeedMultiplier?: number;
 		canvasWidth?: number;
 		canvasHeight?: number;
 		useOnScore?: Function;
@@ -14,6 +15,7 @@
 
 	let {
 		gridSquares = 11,
+		gameSpeedMultiplier = 1,
 		canvasWidth = 500,
 		canvasHeight = 500,
 		useOnScore = () => {},
@@ -28,7 +30,7 @@
 	let buttonText = $state('GO');
 
 	onMount(() => {
-		game = new Game(canvas!, gridSquares);
+		game = new Game(canvas!, gridSquares, gameSpeedMultiplier);
 		const unmountKeyPress = mountKeyPress();
 		game.onScore = (internalScore: number) => {
 			useOnScore(internalScore);
